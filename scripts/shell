@@ -10,13 +10,13 @@ export GK_SCRIPTS=$GK_PATH/scripts
 mkdir -p $GK_REPO_PATH
 
 if [ -z $GK_USER ]; then
-	echo "This shell is supposed to be executed via ssh only. You appear to not have any GitKiss username"
+	echo "This shell is supposed to be executed via ssh only. You appear to not have any GitKiss username" >&2
 	exit 1
 fi
 
 
 
-# launchcommand takes only one string containing the entire command
+# launchcommand takes only one string containing the entire command and, if it is valid, it executes it.
 launchCommand() {
 	cmd=$1
 	shift
@@ -27,28 +27,32 @@ launchCommand() {
 			$GK_SCRIPTS/repo $args
 			;;
 		*)
-			echo "Unrecognized command."
+			echo "Unrecognized command." >&2
 			return 1
 	esac
 }
 
 
+# interactive runs the interactive shell.
 interactive(){
-	echo -n "$GK_PS1"
+	echo -n "$GK_PROMPT"
 	while read line; do
 		if [ "$line" = "exit" ]; then
 			break
 		fi
-		launchCommand $line
-		echo -n "$GK_PS1"
+		if ! launchCommand $line; then
+			echo -n "$GK_ERR_PROMPT"
+		else
+			echo -n "$GK_PROMPT"
+		fi
 	done
-	echo "exiting..."
+	echo "exiting..." >&2
 }
 
 
 if [ "$1" != "-c" ]; then
-	echo "Hi, $GK_USER!"
-	interactive || true
+	echo "\nHi, $GK_USER!\n"
+	interactive
 	exit 0
 fi
 

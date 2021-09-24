@@ -4,6 +4,8 @@
 export GK_REPO_PATH=$(readlink -f $GK_PATH/../repositories)
 
 # interactive shell prompt
-export GK_PS1="GitKiss > "
+export GK_PROMPT="GitKiss > "
+export GK_ERR_PROMPT="GitKiss :( > "
+
 
 # vim:ft=sh
