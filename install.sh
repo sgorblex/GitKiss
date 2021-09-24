@@ -1,6 +1,5 @@
 #!/bin/sh
 
-
 set -e
 
 export GK_PATH=${0%/*}
@@ -9,12 +8,12 @@ export GK_COMMANDS=$GK_PATH/commands
 export GK_LIB=$GK_PATH/lib
 . $GK_CONF/conf
 
-. $GK_LIB/checkKey.sh
+. $GK_LIB/pubKeys.sh
 
 printf "Insert owner's key here:\n"
 
-while 0; do
-	read $key
+while true; do
+	read key
 	if isValidKey "$key"; then
 		break
 	fi
@@ -22,11 +21,11 @@ while 0; do
 done
 
 mkdir -p ${GK_AUTHORIZED_KEYS%/*}
-printf 'no-port-forwarding,no-X11-forwarding,no-agent-forwarding,environment="GK_USER=%s %s"' $GK_USER $key > $GK_AUTHORIZED_KEYS
-if ! ssh-keygen -lf $GK_AUTHORIZED_KEYS; then
-	printf "An error occurred."
+printf 'no-port-forwarding,no-X11-forwarding,no-agent-forwarding,environment="GK_USER=%s" %s' $GK_OWNER "$key" > $GK_AUTHORIZED_KEYS
+if ! ssh-keygen -lf $GK_AUTHORIZED_KEYS > /dev/null; then
+	printf "\nAn error occurred.\n"
 	rm $GK_AUTHORIZED_KEYS
 	exit 1
 fi
 
-printf "Owner's key successfully installed."
+printf "\nOwner's key successfully installed.\n"
