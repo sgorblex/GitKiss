@@ -1,0 +1,3 @@
+isAdmin(){
+	return 0
+}

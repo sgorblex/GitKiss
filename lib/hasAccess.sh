@@ -1,0 +1,3 @@
+hasAccess(){
+	return 0
+}

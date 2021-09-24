@@ -1,7 +1,20 @@
 # this file is meant to be sourced, not executed
 
+
+
+
+# server owner
+GK_OWNER=sgorblex
+
+
+
+# REPOSITORIES
+
 # path of the stored repositories
 GK_REPO_PATH=$(readlink -f $GK_PATH/../repositories)
+
+# maximum number of repositories per user
+GK_MAX_REPOS=99
 
 
 
@@ -32,20 +45,16 @@ GK_MAX_KEYS=10
 
 
 
-# REPOSITORIES
-
-# maximum number of repositories per user
-GK_MAX_REPOS=99
-
-
-
 
 
 # exporting set configuration
+export GK_OWNER
 export GK_REPO_PATH
+export GK_MAX_REPOS
 export GK_INTERACTIVE
 export GK_PROMPT
 export GK_ERR_PROMPT
+export GK_MAX_USERS
 export GK_MAX_KEYS
 
 # vim:ft=sh
