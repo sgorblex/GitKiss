@@ -40,6 +40,9 @@ GK_MAX_USERS=30
 
 # SSH KEYS
 
+# authorized_keys path (leave default if not sure)
+GK_AUTHORIZED_KEYS=$HOME/.ssh/authorized_keys
+
 # maximum number of keys per user
 GK_MAX_KEYS=10
 
