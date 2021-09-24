@@ -14,26 +14,46 @@ if [ -z $GK_USER ]; then
 	exit 1
 fi
 
+
+
+# launchcommand takes only one string containing the entire command
+launchCommand() {
+	cmd=$1
+	shift
+	args=$@
+
+	case $cmd in
+		"repo")
+			$GK_SCRIPTS/repo $args
+			;;
+		*)
+			echo "Unrecognized command."
+			return 1
+	esac
+}
+
+
+interactive(){
+	echo -n "$GK_PS1"
+	while read line; do
+		if [ "$line" = "exit" ]; then
+			break
+		fi
+		launchCommand $line
+		echo -n "$GK_PS1"
+	done
+	echo "exiting..."
+}
+
+
 if [ "$1" != "-c" ]; then
-	echo "Hi, $GK_USER, you have successfully authenticated but we don't provide interactive shell access at the moment."
+	echo "Hi, $GK_USER!"
+	interactive || true
 	exit 0
 fi
 
 shift
 
+# filter out here git pull/push/clone commands
 
-
-# launchcommand takes only one string containing the entire command
-launchcommand() {
-	cmd=$1
-	shift
-	args=$@
-
-	case $cmd
-		in "repo")
-			$GK_SCRIPTS/repo $args
-			;;
-	esac
-}
-
-launchcommand $1
+launchCommand $1
