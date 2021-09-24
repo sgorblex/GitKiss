@@ -18,10 +18,24 @@ GK_ERR_PROMPT="GitKiss :( > "
 
 
 
+# USERS
+
+# maximum number of users
+GK_MAX_USERS=30
+
+
+
 # SSH KEYS
 
 # maximum number of keys per user
 GK_MAX_KEYS=10
+
+
+
+# REPOSITORIES
+
+# maximum number of repositories per user
+GK_MAX_REPOS=99
 
 
 
