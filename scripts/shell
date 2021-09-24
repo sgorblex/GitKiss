@@ -5,7 +5,7 @@ set -e
 export GK_PATH=$(readlink -f ${0%/*}/..)
 export GK_CONF=$GK_PATH/conf
 export GK_SCRIPTS=$GK_PATH/scripts
-. $GK_PATH/conf/conf
+. $GK_CONF/conf
 
 mkdir -p $GK_REPO_PATH
 
@@ -37,6 +37,10 @@ launchCommand() {
 interactive(){
 	echo -n "$GK_PROMPT"
 	while read line; do
+		if [ -z "$line" ]; then
+			echo -n "$GK_PROMPT"
+			continue
+		fi
 		if [ "$line" = "exit" ]; then
 			break
 		fi
@@ -52,7 +56,11 @@ interactive(){
 
 if [ "$1" != "-c" ]; then
 	echo "\nHi, $GK_USER!\n"
-	interactive
+	if [ "$GK_INTERACTIVE" = "true" ]; then
+		interactive
+	else
+		echo "You have successfully authenticated, but we don't provide interactive shell access.\n"
+	fi
 	exit 0
 fi
 

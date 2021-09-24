@@ -1,11 +1,37 @@
 # this file is meant to be sourced, not executed
 
 # path of the stored repositories
-export GK_REPO_PATH=$(readlink -f $GK_PATH/../repositories)
+GK_REPO_PATH=$(readlink -f $GK_PATH/../repositories)
 
-# interactive shell prompt
-export GK_PROMPT="GitKiss > "
-export GK_ERR_PROMPT="GitKiss :( > "
 
+
+# INTERACTIVE SHELL
+
+# active
+GK_INTERACTIVE=true
+
+# normal prompt
+GK_PROMPT="GitKiss > "
+
+# prompt when previous command exited with error
+GK_ERR_PROMPT="GitKiss :( > "
+
+
+
+# SSH KEYS
+
+# maximum number of keys per user
+GK_MAX_KEYS=10
+
+
+
+
+
+# exporting set configuration
+export GK_REPO_PATH
+export GK_INTERACTIVE
+export GK_PROMPT
+export GK_ERR_PROMPT
+export GK_MAX_KEYS
 
 # vim:ft=sh
