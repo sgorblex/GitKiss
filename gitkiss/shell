@@ -1,0 +1,28 @@
+#!/bin/sh
+
+if [ -z $GK_USER ]; then
+	echo "This shell is supposed to be executed via ssh only. You appear to not have any GitKiss username"
+	exit 1
+fi
+
+if [ "$1" != "-c" ]; then
+	echo "Hi, $GK_USER, you have successfully authenticated but we don't provide interactive shell access at the moment."
+	exit 0
+fi
+
+shift
+
+
+
+# launchcommand takes only one string containing the entire command
+launchcommand() {
+	cmd=$1
+	shift
+	args=$@
+	echo "cmd: $cmd"
+	echo "args: $args"
+
+	
+}
+
+launchcommand $1
