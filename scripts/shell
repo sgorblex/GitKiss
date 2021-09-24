@@ -1,5 +1,14 @@
 #!/bin/sh
 
+set -e
+
+export GK_PATH=$(readlink -f ${0%/*}/..)
+export GK_CONF=$GK_PATH/conf
+export GK_SCRIPTS=$GK_PATH/scripts
+. $GK_PATH/conf/conf
+
+mkdir -p $GK_REPO_PATH
+
 if [ -z $GK_USER ]; then
 	echo "This shell is supposed to be executed via ssh only. You appear to not have any GitKiss username"
 	exit 1
@@ -19,10 +28,12 @@ launchcommand() {
 	cmd=$1
 	shift
 	args=$@
-	echo "cmd: $cmd"
-	echo "args: $args"
 
-	
+	case $cmd
+		in "repo")
+			$GK_SCRIPTS/repo $args
+			;;
+	esac
 }
 
 launchcommand $1

@@ -1,0 +1,6 @@
+# this file is meant to be sourced, not executed
+
+# path of the stored repositories
+export GK_REPO_PATH=$(readlink -f $GK_PATH/../repositories)
+
+# vim:ft=sh

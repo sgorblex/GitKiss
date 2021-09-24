@@ -1,0 +1,7 @@
+#!/bin/sh
+
+echo $GK_CONF
+echo $GK_PATH
+echo $GK_REPO_PATH
+echo $GK_SCRIPTS
+echo $GK_USER
