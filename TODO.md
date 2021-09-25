@@ -1,1 +1,2 @@
+- check for unnecessary arguments in commands (check arg number prior to executing the verbs)
 - alphabetic storage of admins and users for access for binary search

@@ -12,8 +12,10 @@ OPTIONS:
 	-h | --help		shows this help"
 
 set -e
-. $GK_LIB/isOwner
+. $GK_LIB/users.sh
 
+GK_USERS=$GK_CONF/users
+GK_ADMINS=$GK_CONF/admins
 
 if ! isOwner $GK_USER; then
 	printf "This command can only be run by the server owner.\n"
@@ -27,8 +29,35 @@ fi
 
 
 lsAdmin(){
-	cat $GK_CONF/admins
+	cat $GK_ADMINS
 	printf "\n"
+}
+
+
+addAdmin(){
+	if ! isUser $1; then
+		printf "$1 is not a valid user.\n"
+		exit 1
+	elif isAdmin $1; then
+		printf "$1 is already an admin.\n"
+		exit 1
+	fi
+	echo $1 >> $GK_ADMINS
+}
+
+
+rmAdmin(){
+	if ! isUser $1; then
+		printf "$1 is not a valid user.\n"
+		exit 1
+	elif ! isAdmin $1; then
+		printf "$1 is not an admin.\n"
+		exit 1
+	elif [ $1 = $GK_USER ]; then
+		printf "You can't remove yourself (the owner) from the admins."
+		exit 1
+	fi
+	grep $1 $GK_ADMINS > $GK_ADMINS
 }
 
 

@@ -1,7 +1,6 @@
 #!/bin/sh
 
-. $GK_LIB/isAdmin.sh
-. $GK_LIB/isOwner.sh
+. $GK_LIB/users.sh
 
 printf "Available commands for user $GK_USER:\n"
 
