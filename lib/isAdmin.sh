@@ -1,3 +1,5 @@
+. $GK_LIB/strings.sh
+
 isAdmin(){
-	return 0
+	isIn $1 $(cat $GK_CONF/admins)
 }
