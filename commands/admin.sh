@@ -18,12 +18,12 @@ GK_USERS=$GK_CONF/users
 GK_ADMINS=$GK_CONF/admins
 
 if ! isOwner $GK_USER; then
-	printf "This command can only be run by the server owner.\n"
+	printf "admin: This command can only be run by the server owner.\n" >&2
 	exit 1
 fi
 
 if [ -z "$1" ]; then
-	printf "Please specify a command.\n"
+	printf "admin: Please specify a command.\n" >&2
 	exit 1
 fi
 
@@ -36,28 +36,30 @@ lsAdmin(){
 
 addAdmin(){
 	if ! isUser $1; then
-		printf "$1 is not a valid user.\n"
+		printf "admin: $1 is not a valid user.\n" >&2
 		exit 1
 	elif isAdmin $1; then
-		printf "$1 is already an admin.\n"
+		printf "admin: $1 is already an admin.\n" >&2
 		exit 1
 	fi
-	echo $1 >> $GK_ADMINS
+	printf "\n$1" >> $GK_ADMINS
+	printf "$1 is now an admin.\n"
 }
 
 
 rmAdmin(){
 	if ! isUser $1; then
-		printf "$1 is not a valid user.\n"
+		printf "admin: $1 is not a valid user.\n" >&2
 		exit 1
 	elif ! isAdmin $1; then
-		printf "$1 is not an admin.\n"
+		printf "admin: $1 is not an admin.\n" >&2
 		exit 1
 	elif [ $1 = $GK_USER ]; then
-		printf "You can't remove yourself (the owner) from the admins."
+		printf "admin: You can't remove yourself (the owner) from the admins." >&2
 		exit 1
 	fi
-	grep $1 $GK_ADMINS > $GK_ADMINS
+	sed -i "/$1/d" $GK_ADMINS
+	printf "$1 has been removed from the admins.\n"
 }
 
 
@@ -77,7 +79,7 @@ case "$1" in
 		printf "%s\n%s\n" "$DESCRIPTION" "$USAGE"
 		;;
 	*)
-		printf "Unrecognised command.\n"
+		printf "admin: Unrecognised command.\n" >&2
 		exit 1
 		;;
 esac

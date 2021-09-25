@@ -16,6 +16,9 @@ GK_REPO_PATH=$(readlink -f $GK_PATH/../repositories)
 # maximum number of repositories per user
 GK_MAX_REPOS=99
 
+# path of the repositories of deleted users (leave blank for no archive)
+GK_ARCHIVE_PATH=$GK_PATH/archived
+
 
 
 # INTERACTIVE SHELL
@@ -54,10 +57,12 @@ GK_MAX_KEYS=10
 export GK_OWNER
 export GK_REPO_PATH
 export GK_MAX_REPOS
+export GK_ARCHIVE_PATH
 export GK_INTERACTIVE
 export GK_PROMPT
 export GK_ERR_PROMPT
 export GK_MAX_USERS
+export GK_AUTHORIZED_KEYS
 export GK_MAX_KEYS
 
 # vim:ft=sh

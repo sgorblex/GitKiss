@@ -20,3 +20,4 @@ fi
 
 printf "\n"
 printf "repo:\tmanage repos\n"
+printf "key:\tmanage ssh public keys\n"

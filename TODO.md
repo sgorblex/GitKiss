@@ -1,2 +1,4 @@
+- better check for ssh pubkey validity
+- set some fallback mechanism for when commands are not run by the shell
 - check for unnecessary arguments in commands (check arg number prior to executing the verbs)
 - alphabetic storage of admins and users for access for binary search
