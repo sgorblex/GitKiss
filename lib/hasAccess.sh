@@ -1,3 +1,0 @@
-hasAccess(){
-	return 0
-}

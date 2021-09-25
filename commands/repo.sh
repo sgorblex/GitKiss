@@ -11,7 +11,7 @@ Where COMMAND is one of:
 				to git-daemon (read only git protocol)
 	unpublish [repo name]	unpublishes the repository with the specified name
 				from git-daemon (git protocol)
-	perm [verb] [arguments]	lists/sets repo permissions
+	perm [verb] [arguments]	lists/sets permissions for your repos
 
 OPTIONS:
 	-h | --help		shows this help"
@@ -20,6 +20,7 @@ set -e
 
 . $GK_LIB/users.sh
 . $GK_LIB/strings.sh
+. $GK_LIB/perms.sh
 
 if ! isUser $GK_USER; then
 	printf "repo: You are not a valid user.\n" >&2
@@ -113,7 +114,7 @@ newRepo() {
 
 	mkdir "$repo_path"
 	git init --bare -q "$repo_path"
-	printf "$GK_USER: rw+" > "$repo_path/perm"
+	printf "$GK_USER: rw+\n" > "$repo_path/gk_perms"
 	printf "Repository created successfully.\n"
 }
 
@@ -167,40 +168,90 @@ permRepo(){
 	PERM_USAGE="USAGE: repo perm [-h | --help] [VERB] [arguments]
 
 Where VERB is one of:
-	ls [repo]				lists user permissions for the specified repo
-	grant [r|rw] [username]	[repo]		lists grants read (r) or read+write (rw) permission to the specified user
-	revoke [r|w|rw] [username] [repo]	lists the repositories owned by username that you have access to
+	ls [repo]			lists user permissions for the specified repo
+	set [repo] [username] [PERM]	grants read (r) or read+write (rw) permission to the specified user
+
+Where PERM is one of:
+	r				read only
+	rw				read and write
+	none				no permission
+
 
 OPTIONS:
 	-h | --help		shows this help"
 
-	lsRepoMine(){
-		printf "Repositories owned by $GK_USER:\n"
+	permRepoLs(){
+		if [ -z "$1" ]; then
+			printf "repo: perm: ls: Insert repo name as argument\n" >&2
+			exit 1
+		fi
 
-		for repo in $GK_REPO_PATH/$GK_USER/*; do
-			repo=${repo##*/}
-			printf "${repo%.git}\n"
-		done
+		repo="${@%.git}"
+		repo_path="$GK_REPO_PATH/$GK_USER/${repo}.git"
+
+		if [ ! -d "$repo_path" ]; then
+			printf "repo: perm: ls: A repository with such name does not exist.\n" >&2
+			exit 1
+		fi
+
+		printf "Permissions for repo $repo:\n"
+		cat $repo_path/gk_perms
+	}
+
+	permRepoSet(){
+		if [ -z "$1" ]; then
+			printf "repo: perm: grant: Insert repo name as argument\n" >&2
+			exit 1
+		fi
+
+		repo="${1%.git}"
+		repo_path="$GK_REPO_PATH/$GK_USER/${repo}.git"
+		perms_path=$repo_path/gk_perms
+
+		if [ ! -d "$repo_path" ]; then
+			printf "repo: perm: set: A repository with such name does not exist.\n" >&2
+			exit 1
+		fi
+
+		if ! isUser "$2"; then
+			printf "repo: perm: set: No such user: $2.\n" >&2
+			exit 1
+		fi
+
+		if [ "$2" = "$GK_USER" ]; then
+			printf "repo: perm: set: You can't set your own permissions (you are the owner!).\n" >&2
+			exit 1
+		fi
+
+		perm_code=$(permCode "$3")
+		if [ $perm_code -eq -1 ]; then
+			printf "repo: perm: set: Invalid permissions: $3.\n" >&2
+			exit 1
+		fi
+
+		sed -i "/^$2: rw\?\$/d" $perms_path
+		if [ $perm_code -ne 0 ]; then
+			printf "$2: $3\n" >> $perms_path
+		fi
+
+		printf "Permissions set.\n"
 	}
 
 	case "$1" in
-		"mine"|"")
-			lsRepoMine
-			;;
-		"all")
-			lsRepoAll
-			;;
-		"user")
+		"ls")
 			shift
-			lsRepoUser $@
+			permRepoLs $@
+			;;
+		"set")
+			shift
+			permRepoSet $@
 			;;
 		"--help" | "-h")
-			printf "$LS_USAGE\n"
+			printf "$PERM_USAGE\n"
 			;;
 		*)
-			printf "repo: ls: Unrecognised verb.\n" >&2
+			printf "repo: perm: Unrecognised verb.\n" >&2
 			exit 1
-			;;
 	esac
 }
 
@@ -227,8 +278,6 @@ case "$1" in
 		;;
 	"perm")
 		shift
-		printf "Not implemented yet. Sorry!\n" >&2
-		exit 42
 		permRepo $@
 		;;
 	"--help" | "-h")
