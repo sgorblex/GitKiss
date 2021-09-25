@@ -54,11 +54,11 @@ interactive(){
 
 
 if [ "$1" != "-c" ]; then
-	printf "\nHi, $GK_USER!\n\n"
+	printf "Hi, $GK_USER!\n"
 	if [ "$GK_INTERACTIVE" = "true" ]; then
 		interactive
 	else
-		printf "You have successfully authenticated, but we don't provide interactive shell access.\n\n"
+		printf "You have successfully authenticated, but we don't provide interactive shell access.\n"
 	fi
 	exit 0
 fi

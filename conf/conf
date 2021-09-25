@@ -24,10 +24,10 @@ GK_MAX_REPOS=99
 GK_INTERACTIVE=true
 
 # normal prompt
-GK_PROMPT="GitKiss > "
+GK_PROMPT="\nGitKiss > "
 
 # prompt when previous command exited with error
-GK_ERR_PROMPT="GitKiss :( > "
+GK_ERR_PROMPT="\nGitKiss :( > "
 
 
 
