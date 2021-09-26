@@ -4,3 +4,4 @@
 - alphabetic storage of admins and users for access for binary search
 - make everything work with names containing spaces (except users: those should be checked not to have spaces)
 - substitute `if [ ! -d "$repo_path" ]` with a library function `isRepo(user, reponame)`
+- flag to make every repo accessible by the owner, another flag for admins (?). Should this also give permission to manage?

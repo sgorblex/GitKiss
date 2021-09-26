@@ -31,7 +31,6 @@ fi
 
 lsUser(){
 	cat $GK_USERS
-	printf "\n"
 }
 
 
@@ -49,13 +48,13 @@ newUser(){
 		fi
 		printf "Invalid key. Insert a valid key:\n" >&2
 	done
-	printf 'no-port-forwarding,no-X11-forwarding,no-agent-forwarding,environment="GK_USER=%s" %s' $1 "$key" >> $GK_AUTHORIZED_KEYS
+	printf 'no-port-forwarding,no-X11-forwarding,no-agent-forwarding,environment="GK_USER=%s" %s\n' $1 "$key" >> $GK_AUTHORIZED_KEYS
 	if ! ssh-keygen -lf $GK_AUTHORIZED_KEYS > /dev/null; then
 		printf "\nAn error occurred. Are you sure the key was valid?\n" >&2
 		sed -i '$ d' $GK_AUTHORIZED_KEYS
 		exit 1
 	fi
-	printf "\n$1" >> $GK_CONF/users
+	printf "$1\n" >> $GK_CONF/users
 	mkdir $GK_REPO_PATH/$1
 	printf "User $1 has been added.\n"
 }
@@ -70,9 +69,9 @@ rmUser(){
 		exit 1
 	fi
 	if [ -n $GK_ARCHIVE_PATH ]; then
-		printf "WARNING: this will delete the user as well as archive all their repos. Are you sure? (yes/no)"
+		printf "WARNING: this will delete the user as well as archive all their repos. Are you sure? (yes/no)\n"
 	else
-		printf "WARNING: this will delete the user as well as all their repos. Are you sure? (yes/no)"
+		printf "WARNING: this will delete the user as well as all of their repos. Are you sure? (yes/no)\n"
 	fi
 	read ans
 	if [ "$ans" != "yes" ]; then

@@ -54,29 +54,31 @@ interactive(){
 }
 
 handleGit(){
-	if [ $1 != "git" ]; then
+	if [ "$1" = "${1#git-}" ]; then
 		return 0
 	fi
 
-	if [ "$3" = "${3##*/}" ]; then
-		repo="$GK_USER/$3"
-	else
-		repo="$3"
+	repo="${2#\'}"
+	repo="${repo%\'}"
+	if [ "$repo" = "${repo##*/}" ]; then
+		repo="$GK_USER/$repo"
 	fi
 
-	case $2 in
-		"receive-pack")
+	case $1 in
+		"git-receive-pack")
 			if [ $(getPerms $repo $GK_USER) -ne 2 ]; then
 				return 1
 			else
-				$1 $2 $repo
+				$1 "$GK_REPO_PATH/$repo.git"
+				exit 0
 			fi
 			;;
-		"upload-pack"|"upload-archive")
+		"git-upload-pack"|"git-upload-archive")
 			if [ $(getPerms $repo $GK_USER) -lt 1 ]; then
 				return 1
 			else
-				$1 $2 $repo
+				$1 "$GK_REPO_PATH/$repo.git"
+				exit 0
 			fi
 			;;
 		*)

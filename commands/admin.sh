@@ -30,7 +30,6 @@ fi
 
 lsAdmin(){
 	cat $GK_ADMINS
-	printf "\n"
 }
 
 
@@ -42,7 +41,7 @@ addAdmin(){
 		printf "admin: $1 is already an admin.\n" >&2
 		exit 1
 	fi
-	printf "\n$1" >> $GK_ADMINS
+	printf "$1\n" >> $GK_ADMINS
 	printf "$1 is now an admin.\n"
 }
 
