@@ -59,9 +59,13 @@ OPTIONS:
 			lsRepoMine
 			;;
 		"all")
+			printf "Not implemented yet. Sorry!\n" >&2
+			exit 42
 			lsRepoAll
 			;;
 		"user")
+			printf "Not implemented yet. Sorry!\n" >&2
+			exit 42
 			shift
 			lsRepoUser $@
 			;;

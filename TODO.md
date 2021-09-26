@@ -5,3 +5,9 @@
 - make everything work with names containing spaces (except users: those should be checked not to have spaces)
 - substitute `if [ ! -d "$repo_path" ]` with a library function `isRepo(user, reponame)`
 - flag to make every repo accessible by the owner, another flag for admins (?). Should this also give permission to manage?
+- implement key command
+- implement repo limits
+- write way better code
+- write code documentation
+- write user documentation
+- implement the rest of repo ls
