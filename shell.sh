@@ -10,11 +10,12 @@ export GK_LIB=$GK_PATH/lib
 
 mkdir -p $GK_REPO_PATH
 
+. $GK_LIB/perms.sh
+
 if [ -z $GK_USER ]; then
 	printf "This shell is supposed to be executed via ssh only. You appear to not have any GitKiss username\n" >&2
 	exit 1
 fi
-
 
 
 # launchCommand takes only one string containing the entire command and, if it is valid, it executes it.
@@ -52,6 +53,38 @@ interactive(){
 	printf "exiting...\n" >&2
 }
 
+handleGit(){
+	if [ $1 != "git" ]; then
+		return 0
+	fi
+
+	if [ "$3" = "${3##*/}" ]; then
+		repo="$GK_USER/$3"
+	else
+		repo="$3"
+	fi
+
+	case $2 in
+		"receive-pack")
+			if [ $(getPerms $repo $GK_USER) -ne 2 ]; then
+				return 1
+			else
+				$1 $2 $repo
+			fi
+			;;
+		"upload-pack"|"upload-archive")
+			if [ $(getPerms $repo $GK_USER) -lt 1 ]; then
+				return 1
+			else
+				$1 $2 $repo
+			fi
+			;;
+		*)
+			return 0
+	esac
+
+}
+
 
 if [ "$1" != "-c" ]; then
 	printf "Hi, $GK_USER!\n"
@@ -65,6 +98,6 @@ fi
 
 shift
 
-# filter out here git pull/push/clone commands
 
+handleGit $1
 launchCommand $1
