@@ -21,6 +21,7 @@
 - text exploits like calling a key "GK_USER=blabla"
 - fix multiple words key names
 - avoid adding two keys with the same names
+- avoid duplicate creation (the same for users and repos)
 
 
 ## Ideas

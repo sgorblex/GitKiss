@@ -55,18 +55,47 @@ OPTIONS:
 		done
 	}
 
+	repo_ls_all(){
+		for user in $(cat "$GK_USERLIST"); do
+			for repo in "$GK_REPO_PATH/$user/"*; do
+				if grep -Ex "$GK_USER: rw?\+?" "$repo/gk_perms" &>/dev/null; then
+					reponame="${repo##*/}"
+					printf "$user/${reponame%.git}: "
+					sed -n "s/^$GK_USER: \(rw\?\+\?\)/\1/p" "$repo/gk_perms"
+				fi
+			done
+		done
+	}
+
+	repo_ls_user(){
+		if [ -z "$1" ]; then
+			printf "repo: ls: user: Please provide an username.\n" >&2
+		fi
+
+		if ! isUser "$1"; then
+			printf "repo: ls: user: $1 is not a valid user.\n" >&2
+			exit 1
+		fi
+
+		printf "Repositories owned by $1 that you have access to:\n" >&2
+
+		for repo in "$GK_REPO_PATH/$1/"*; do
+			if grep -Ex "$GK_USER: rw?\+?" "$repo/gk_perms" &>/dev/null; then
+				reponame="${repo##*/}"
+				printf "${reponame%.git}: "
+				sed -n "s/^$GK_USER: \(rw\?\+\?\)/\1/p" "$repo/gk_perms"
+			fi
+		done
+	}
+
 	case "$1" in
 		"mine"|"")
 			repo_ls_mine
 			;;
 		"all")
-			printf "Not implemented yet. Sorry!\n" >&2
-			exit 42
 			repo_ls_all
 			;;
 		"user")
-			printf "Not implemented yet. Sorry!\n" >&2
-			exit 42
 			shift
 			repo_ls_user $@
 			;;
@@ -185,7 +214,7 @@ Where PERM is one of:
 OPTIONS:
 	-h | --help		shows this help"
 
-	repo_permLs(){
+	repo_perm_ls(){
 		if [ -z "$1" ]; then
 			printf "repo: perm: ls: Insert repo name as argument\n" >&2
 			exit 1
@@ -203,7 +232,7 @@ OPTIONS:
 		cat "$repo_path/gk_perms"
 	}
 
-	repo_permSet(){
+	repo_perm_set(){
 		if [ -z "$1" ]; then
 			printf "repo: perm: grant: Insert repo name as argument\n" >&2
 			exit 1
@@ -245,11 +274,11 @@ OPTIONS:
 	case "$1" in
 		"ls")
 			shift
-			repo_permLs $@
+			repo_perm_ls $@
 			;;
 		"set")
 			shift
-			repo_permSet $@
+			repo_perm_set $@
 			;;
 		"--help" | "-h")
 			printf "$PERM_USAGE\n"
