@@ -9,7 +9,7 @@ isValidKey(){
 
 # nameKey takes a public key and a name and substitutes the ending string with the specified name
 nameKey(){
-	printf ${1%% *} $2
+	printf "${1% *} $2"
 }
 
 # keyPreamble takes a username and outputs the key preamble for that username (including the trailing space)

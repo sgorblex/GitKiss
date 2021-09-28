@@ -48,7 +48,8 @@ newUser(){
 		fi
 		printf "Invalid key. Insert a valid key:\n" >&2
 	done
-	printf 'no-port-forwarding,no-X11-forwarding,no-agent-forwarding,environment="GK_USER=%s" %s\n' $1 "$key" >> $GK_AUTHORIZED_KEYS
+	namedKey=$(nameKey "$key" "default")
+	printf 'no-port-forwarding,no-X11-forwarding,no-agent-forwarding,environment="GK_USER=%s" %s\n' $1 "$namedKey" >> $GK_AUTHORIZED_KEYS
 	if ! ssh-keygen -lf $GK_AUTHORIZED_KEYS > /dev/null; then
 		printf "\nAn error occurred. Are you sure the key was valid?\n" >&2
 		sed -i '$ d' $GK_AUTHORIZED_KEYS

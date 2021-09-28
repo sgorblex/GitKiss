@@ -48,20 +48,15 @@ key_add(){
 		printf "Invalid key. Insert a valid key:\n" >&2
 	done
 
-	completeKey=$(nameKey "$key" "$1")
-	printf "$completeKey\n"
-	exit 42
-
 	completeKey=$(keyPreamble $GK_USER)$(nameKey "$key" "$1")
-	printf "$completeKey\n"
-	exit 42
-	# printf $(keyPreamble $GK_USER) $(nameKey "$key" "$1") >> $GK_AUTHORIZED_KEYS
 	printf "$completeKey\n" >> $GK_AUTHORIZED_KEYS
 	if ! ssh-keygen -lf $GK_AUTHORIZED_KEYS &> /dev/null; then
 		printf "\nAn error occurred. Are you sure the key was valid?\n" >&2
 		sed -i '$ d' $GK_AUTHORIZED_KEYS
 		exit 1
 	fi
+
+	printf 'Key "%s" added successfully.\n' $1
 }
 
 key_rm(){
@@ -70,7 +65,7 @@ key_rm(){
 		exit 1
 	fi
 
-	if [ $(grep -E "^$(keyPreamble $GK_USER)" | wc -l) -eq 1 ]; then
+	if [ $(grep -E "^$(keyPreamble $GK_USER)" $GK_AUTHORIZED_KEYS | wc -l) -lt 2 ]; then
 		printf "You cannot remove your last key!" >&2
 		exit 1
 	fi

@@ -21,6 +21,11 @@ if [ -f $GK_CONF/admins -o -d $SSH_DIR ]; then
 	fi
 fi
 
+if [ -f "$GK_REPO_PATH" ]; then
+	mv "$GK_REPO_PATH" "$GK_ARCHIVE_PATH"
+fi
+mkdir -p $GK_REPO_PATH
+
 printf "Insert owner's key here:\n"
 while true; do
 	read key
@@ -32,7 +37,8 @@ done
 
 mkdir -p $SSH_DIR
 chmod 700 $SSH_DIR
-printf 'no-port-forwarding,no-X11-forwarding,no-agent-forwarding,environment="GK_USER=%s" %s\n' $GK_OWNER "$key" > $GK_AUTHORIZED_KEYS
+namedKey=$(nameKey "$key" "default")
+printf 'no-port-forwarding,no-X11-forwarding,no-agent-forwarding,environment="GK_USER=%s" %s\n' $GK_OWNER "$namedKey" > $GK_AUTHORIZED_KEYS
 chmod 600 $GK_AUTHORIZED_KEYS
 if ! ssh-keygen -lf $GK_AUTHORIZED_KEYS > /dev/null; then
 	printf "\nAn error occurred.\n" >&2
