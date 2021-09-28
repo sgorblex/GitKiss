@@ -2,32 +2,29 @@
 
 set -e
 
-export GK_PATH=${0%/*}
-export GK_CONF=$GK_PATH/conf
-export GK_COMMANDS=$GK_PATH/commands
-export GK_LIB=$GK_PATH/lib
-. $GK_CONF/conf
+export GK_PATH="${0%/*}"
+export GK_CONF="$GK_PATH/conf.sh"
+export GK_COMMANDS="$GK_PATH/commands"
+export GK_LIB="$GK_PATH/lib"
+. "$GK_CONF"
 
-mkdir -p $GK_REPO_PATH
+. "$GK_LIB/perms.sh"
 
-. $GK_LIB/perms.sh
-
-if [ -z $GK_USER ]; then
+if [ -z "$GK_USER" ]; then
 	printf "This shell is supposed to be executed via ssh only. You appear to not have any GitKiss username\n" >&2
 	exit 1
 fi
 
 
-# launchCommand takes only one string containing the entire command and, if it is valid, it executes it.
 launchCommand() {
-	cmd=$1
+	cmd="$1"
 	shift
-	args=$@
+	args="$@"
 
 	if [ -f "$GK_COMMANDS/$cmd.sh" ]; then
-		$GK_COMMANDS/$cmd.sh $args
+		"$GK_COMMANDS/$cmd.sh" $args
 	else
-		printf "Unrecognized command.\n" >&2
+		printf "Unrecognized command: $cmd\n" >&2
 		return 1
 	fi
 }
@@ -55,51 +52,47 @@ interactive(){
 
 handleGit(){
 	if [ "$1" = "${1#git-}" ]; then
-		return 0
+		return 1
 	fi
 
-	repo="${2#\'}"
-	repo="${repo%\'}"
+	repo="${2#\'}"		# 'repo' -> repo'
+	repo="${repo%\'}"	#  repo' -> repo
 	if [ "$repo" = "${repo##*/}" ]; then
 		repo="$GK_USER/$repo"
 	fi
 
 	case $1 in
 		"git-receive-pack")
-			if [ $(getPerms $repo $GK_USER) -ne 2 ]; then
-				return 1
+			if [ $(getPerms "$repo" "$GK_USER") -lt 2 ]; then
+				exit 1
 			else
-				$1 "$GK_REPO_PATH/$repo.git"
-				exit 0
+				"$1" "$GK_REPO_PATH/$repo.git"
+				return 0
 			fi
 			;;
 		"git-upload-pack"|"git-upload-archive")
-			if [ $(getPerms $repo $GK_USER) -lt 1 ]; then
-				return 1
+			if [ $(getPerms "$repo" "$GK_USER") -lt 1 ]; then
+				exit 1
 			else
-				$1 "$GK_REPO_PATH/$repo.git"
-				exit 0
+				"$1" "$GK_REPO_PATH/$repo.git"
+				return 0
 			fi
 			;;
 		*)
-			return 0
+			return 1
 	esac
 
 }
 
 
-if [ "$1" != "-c" ]; then
+if [ "$1" = "-c" ]; then
+	shift
+	handleGit $1 ||	launchCommand $1
+else
 	printf "Hi, $GK_USER!\n"
 	if [ "$GK_INTERACTIVE" = "true" ]; then
 		interactive
 	else
-		printf "You have successfully authenticated, but we don't provide interactive shell access.\n"
+		printf "You have successfully authenticated, but we don't provide interactive shell access.\n" >&2
 	fi
-	exit 0
 fi
-
-shift
-
-
-handleGit $1
-launchCommand $1

@@ -14,10 +14,11 @@ OPTIONS:
 
 set -e
 
-. $GK_LIB/users.sh
-. $GK_LIB/pubKeys.sh
+. "$GK_LIB/users.sh"
+. "$GK_LIB/pubKeys.sh"
 
-if ! isUser $GK_USER; then
+
+if ! isUser "$GK_USER"; then
 	printf "repo: You are not a valid user.\n" >&2
 	exit 1
 fi
@@ -29,7 +30,7 @@ fi
 
 
 key_ls(){
-	sed -n "s/.*\"GK_USER=$GK_USER\".* \(.*\)/\1/p" $GK_AUTHORIZED_KEYS
+	sed -n "s/.*\"GK_USER=$GK_USER\".* \(.*\)/\1/p" "$GK_AUTHORIZED_KEYS"
 }
 
 key_add(){
@@ -48,15 +49,15 @@ key_add(){
 		printf "Invalid key. Insert a valid key:\n" >&2
 	done
 
-	completeKey=$(keyPreamble $GK_USER)$(nameKey "$key" "$1")
-	printf "$completeKey\n" >> $GK_AUTHORIZED_KEYS
-	if ! ssh-keygen -lf $GK_AUTHORIZED_KEYS &> /dev/null; then
+	completeKey="$(keyPreamble "$GK_USER")$(nameKey "$key" "$1")"
+	printf "$completeKey\n" >> "$GK_AUTHORIZED_KEYS"
+	if ! ssh-keygen -lf "$GK_AUTHORIZED_KEYS" &> /dev/null; then
 		printf "\nAn error occurred. Are you sure the key was valid?\n" >&2
-		sed -i '$ d' $GK_AUTHORIZED_KEYS
+		sed -i '$ d' "$GK_AUTHORIZED_KEYS"
 		exit 1
 	fi
 
-	printf 'Key "%s" added successfully.\n' $1
+	printf 'Key "%s" added successfully.\n' "$1"
 }
 
 key_rm(){
@@ -65,12 +66,12 @@ key_rm(){
 		exit 1
 	fi
 
-	if [ $(grep -E "^$(keyPreamble $GK_USER)" $GK_AUTHORIZED_KEYS | wc -l) -lt 2 ]; then
+	if [ $(grep -E "^$(keyPreamble "$GK_USER")" "$GK_AUTHORIZED_KEYS" | wc -l) -lt 2 ]; then
 		printf "You cannot remove your last key!" >&2
 		exit 1
 	fi
 
-	sed -i "/\"GK_USER=$GK_USER\".* $@/d" $GK_AUTHORIZED_KEYS
+	sed -i "/\"GK_USER=$GK_USER\".* $@/d" "$GK_AUTHORIZED_KEYS"
 	printf "$1 has been removed from your keys.\n"
 }
 
@@ -84,12 +85,12 @@ key_rename(){
 		exit 1
 	fi
 
-	if ! existsKey $GK_USER $1; then
-		printf 'key: rename: The key "%s" does not exist.\n' $1 >&2
+	if ! existsKey "$GK_USER" "$1"; then
+		printf 'key: rename: The key "%s" does not exist.\n' "$1" >&2
 		exit 1
 	fi
 
-	sed -i "s/\(.*\"GK_USER=$GK_USER\".* \)$1/\1$2/" $GK_AUTHORIZED_KEYS
+	sed -i "s/\(.*\"GK_USER=$GK_USER\".* \)$1/\1$2/" "$GK_AUTHORIZED_KEYS"
 	printf "$1 has been renamed to $2.\n"
 }
 

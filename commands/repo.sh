@@ -18,11 +18,12 @@ OPTIONS:
 
 set -e
 
-. $GK_LIB/users.sh
-. $GK_LIB/strings.sh
-. $GK_LIB/perms.sh
+. "$GK_LIB/users.sh"
+. "$GK_LIB/strings.sh"
+. "$GK_LIB/perms.sh"
 
-if ! isUser $GK_USER; then
+
+if ! isUser "$GK_USER"; then
 	printf "repo: You are not a valid user.\n" >&2
 	exit 1
 fi
@@ -34,7 +35,7 @@ fi
 
 
 
-lsRepo() {
+repo_ls() {
 	LS_USAGE="USAGE: repo ls [-h | --help] [VERB] [arguments]
 
 Where VERB is one of:
@@ -45,29 +46,29 @@ Where VERB is one of:
 OPTIONS:
 	-h | --help		shows this help"
 
-	lsRepoMine(){
-		printf "Repositories owned by $GK_USER:\n"
+	repo_ls_mine(){
+		printf "Repositories owned by $GK_USER:\n" >&2
 
-		for repo in $GK_REPO_PATH/$GK_USER/*; do
-			repo=${repo##*/}
+		for repo in "$GK_REPO_PATH/$GK_USER/"*; do
+			repo="${repo##*/}"
 			printf "${repo%.git}\n"
 		done
 	}
 
 	case "$1" in
 		"mine"|"")
-			lsRepoMine
+			repo_ls_mine
 			;;
 		"all")
 			printf "Not implemented yet. Sorry!\n" >&2
 			exit 42
-			lsRepoAll
+			repo_ls_all
 			;;
 		"user")
 			printf "Not implemented yet. Sorry!\n" >&2
 			exit 42
 			shift
-			lsRepoUser $@
+			repo_ls_user $@
 			;;
 		"--help" | "-h")
 			printf "$LS_USAGE\n"
@@ -79,7 +80,7 @@ OPTIONS:
 	esac
 }
 
-rmRepo() {
+repo_rm() {
 	if [ -z "$1" ]; then
 		printf "repo: rm: Insert repo name as argument\n" >&2
 		exit 1
@@ -97,7 +98,7 @@ rmRepo() {
 	printf "Repository deleted successfully.\n"
 }
 
-newRepo() {
+repo_new() {
 	if [ -z "$1" ]; then
 		printf "repo: new: Insert repo name as argument.\n" >&2
 		exit 1
@@ -122,7 +123,7 @@ newRepo() {
 	printf "Repository created successfully.\n"
 }
 
-publishRepo() {
+repo_publish() {
 	if [ -z "$1" ]; then
 		printf "repo: publish: Insert repo name as argument.\n" >&2
 		exit 1
@@ -145,7 +146,7 @@ publishRepo() {
 	printf "Repository published successfully.\n"
 }
 
-unpublishRepo() {
+repo_unpublish() {
 	if [ -z "$1" ]; then
 		printf "repo: unpublish: Insert repo name as argument\n" >&2
 		exit 1
@@ -168,7 +169,7 @@ unpublishRepo() {
 	printf "Repository unpublished successfully."
 }
 
-permRepo(){
+repo_perm(){
 	PERM_USAGE="USAGE: repo perm [-h | --help] [VERB] [arguments]
 
 Where VERB is one of:
@@ -184,7 +185,7 @@ Where PERM is one of:
 OPTIONS:
 	-h | --help		shows this help"
 
-	permRepoLs(){
+	repo_permLs(){
 		if [ -z "$1" ]; then
 			printf "repo: perm: ls: Insert repo name as argument\n" >&2
 			exit 1
@@ -199,10 +200,10 @@ OPTIONS:
 		fi
 
 		printf "Permissions for repo $repo:\n"
-		cat $repo_path/gk_perms
+		cat "$repo_path/gk_perms"
 	}
 
-	permRepoSet(){
+	repo_permSet(){
 		if [ -z "$1" ]; then
 			printf "repo: perm: grant: Insert repo name as argument\n" >&2
 			exit 1
@@ -210,7 +211,7 @@ OPTIONS:
 
 		repo="${1%.git}"
 		repo_path="$GK_REPO_PATH/$GK_USER/${repo}.git"
-		perms_path=$repo_path/gk_perms
+		perms_path="$repo_path/gk_perms"
 
 		if [ ! -d "$repo_path" ]; then
 			printf "repo: perm: set: A repository with such name does not exist.\n" >&2
@@ -227,15 +228,15 @@ OPTIONS:
 			exit 1
 		fi
 
-		perm_code=$(permCode "$3")
-		if [ $perm_code -eq -1 ]; then
+		perm_code="$(permCode "$3")"
+		if [ "$perm_code" -eq -1 ]; then
 			printf "repo: perm: set: Invalid permissions: $3.\n" >&2
 			exit 1
 		fi
 
-		sed -i "/^$2: rw\?\$/d" $perms_path
-		if [ $perm_code -ne 0 ]; then
-			printf "$2: $3\n" >> $perms_path
+		sed -i "/^$2: rw\?\$/d" "$perms_path"
+		if [ "$perm_code" -ne 0 ]; then
+			printf "$2: $3\n" >> "$perms_path"
 		fi
 
 		printf "Permissions set.\n"
@@ -244,11 +245,11 @@ OPTIONS:
 	case "$1" in
 		"ls")
 			shift
-			permRepoLs $@
+			repo_permLs $@
 			;;
 		"set")
 			shift
-			permRepoSet $@
+			repo_permSet $@
 			;;
 		"--help" | "-h")
 			printf "$PERM_USAGE\n"
@@ -262,27 +263,27 @@ OPTIONS:
 case "$1" in
 	"ls")
 		shift
-		lsRepo $@
+		repo_ls $@
 		;;
 	"new")
 		shift
-		newRepo $@
+		repo_new $@
 		;;
 	"rm")
 		shift
-		rmRepo $@
+		repo_rm $@
 		;;
 	"publish")
 		shift
-		publishRepo $@
+		repo_publish $@
 		;;
 	"unpublish")
 		shift
-		unpublishRepo $@
+		repo_unpublish $@
 		;;
 	"perm")
 		shift
-		permRepo $@
+		repo_perm $@
 		;;
 	"--help" | "-h")
 		printf "%s\n%s\n" "$DESCRIPTION" "$USAGE"

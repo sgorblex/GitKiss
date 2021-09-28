@@ -14,10 +14,10 @@ nameKey(){
 
 # keyPreamble takes a username and outputs the key preamble for that username (including the trailing space)
 keyPreamble(){
-	printf '%s%s" ' $KEY_PREAMBLE $1
+	printf '%s%s" ' "$KEY_PREAMBLE" "$1"
 }
 
 # existsKey takes a username and a key name and returns 0 if username has a key named name
 existsKey(){
-	grep -Ex "$(keyPreamble $1).* $2" $GK_AUTHORIZED_KEYS &>/dev/null
+	grep -Ex "$(keyPreamble $1).* $2" "$GK_AUTHORIZED_KEYS" &>/dev/null
 }

@@ -12,13 +12,12 @@ OPTIONS:
 	-h | --help		shows this help"
 
 set -e
-. $GK_LIB/users.sh
-. $GK_LIB/pubKeys.sh
 
-GK_USERS=$GK_CONF/users
-GK_ADMINS=$GK_CONF/admins
+. "$GK_LIB/users.sh"
+. "$GK_LIB/pubKeys.sh"
 
-if ! isAdmin $GK_USER; then
+
+if ! isAdmin "$GK_USER"; then
 	printf "user: This command can only be run by a server admin.\n" >&2
 	exit 1
 fi
@@ -29,13 +28,13 @@ if [ -z "$1" ]; then
 fi
 
 
-lsUser(){
-	cat $GK_USERS
+user_ls(){
+	cat "$GK_USERLIST"
 }
 
 
-newUser(){
-	if isUser $1; then
+user_new(){
+	if isUser "$1"; then
 		printf "user: username $1 already taken.\n" >&2
 		exit 1
 	fi
@@ -49,27 +48,27 @@ newUser(){
 		printf "Invalid key. Insert a valid key:\n" >&2
 	done
 	namedKey=$(nameKey "$key" "default")
-	printf 'no-port-forwarding,no-X11-forwarding,no-agent-forwarding,environment="GK_USER=%s" %s\n' $1 "$namedKey" >> $GK_AUTHORIZED_KEYS
-	if ! ssh-keygen -lf $GK_AUTHORIZED_KEYS > /dev/null; then
+	printf 'no-port-forwarding,no-X11-forwarding,no-agent-forwarding,environment="GK_USER=%s" %s\n' "$1" "$namedKey" >> "$GK_AUTHORIZED_KEYS"
+	if ! ssh-keygen -lf "$GK_AUTHORIZED_KEYS" > /dev/null; then
 		printf "\nAn error occurred. Are you sure the key was valid?\n" >&2
-		sed -i '$ d' $GK_AUTHORIZED_KEYS
+		sed -i '$ d' "$GK_AUTHORIZED_KEYS"
 		exit 1
 	fi
-	printf "$1\n" >> $GK_CONF/users
-	mkdir $GK_REPO_PATH/$1
+	printf "$1\n" >> "$GK_USERLIST"
+	mkdir "$GK_REPO_PATH/$1"
 	printf "User $1 has been added.\n"
 }
 
 
-rmUser(){
-	if ! isUser $1; then
+user_rm(){
+	if ! isUser "$1"; then
 		printf "user: $1 is not a valid user.\n" >&2
 		exit 1
-	elif isAdmin $1; then
+	elif isAdmin "$1"; then
 		printf "user: you cannot remove an admin.\n" >&2
 		exit 1
 	fi
-	if [ -n $GK_ARCHIVE_PATH ]; then
+	if [ -n "$GK_ARCHIVE_PATH" ]; then
 		printf "WARNING: this will delete the user as well as archive all their repos. Are you sure? (yes/no)\n"
 	else
 		printf "WARNING: this will delete the user as well as all of their repos. Are you sure? (yes/no)\n"
@@ -80,29 +79,29 @@ rmUser(){
 		exit 0
 	fi
 
-	if [ -n $GK_ARCHIVE_PATH ]; then
-		mkdir -p $GK_ARCHIVE_PATH
-		mv $GK_REPO_PATH/$1 $GK_ARCHIVE_PATH/
+	if [ -n "$GK_ARCHIVE_PATH" ]; then
+		mkdir -p "$GK_ARCHIVE_PATH"
+		mv "$GK_REPO_PATH/$1" "$GK_ARCHIVE_PATH/"
 	else
-		rm -rf $GK_REPO_PATH/$1
+		rm -rf "$GK_REPO_PATH/$1"
 	fi
-	sed -i "/$1/d" $GK_USERS
-	sed -i "/\"GK_USER=$1\"/d" $GK_AUTHORIZED_KEYS
+	sed -i "/$1/d" "$GK_USERLIST"
+	sed -i "/\"GK_USER=$1\"/d" "$GK_AUTHORIZED_KEYS"
 	printf "$1 has been removed from the users.\n"
 }
 
 
 case "$1" in
 	"ls")
-		lsUser
+		user_ls
 		;;
 	"new")
 		shift
-		newUser $@
+		user_new $@
 		;;
 	"rm")
 		shift
-		rmUser $@
+		user_rm $@
 		;;
 	"--help" | "-h")
 		printf "%s\n%s\n" "$DESCRIPTION" "$USAGE"

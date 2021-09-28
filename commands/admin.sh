@@ -12,12 +12,11 @@ OPTIONS:
 	-h | --help		shows this help"
 
 set -e
-. $GK_LIB/users.sh
 
-GK_USERS=$GK_CONF/users
-GK_ADMINS=$GK_CONF/admins
+. "$GK_LIB/users.sh"
 
-if ! isOwner $GK_USER; then
+
+if ! isOwner "$GK_USER"; then
 	printf "admin: This command can only be run by the server owner.\n" >&2
 	exit 1
 fi
@@ -28,51 +27,51 @@ if [ -z "$1" ]; then
 fi
 
 
-lsAdmin(){
-	cat $GK_ADMINS
+admin_ls(){
+	cat "$GK_ADMINLIST"
 }
 
 
-addAdmin(){
-	if ! isUser $1; then
+admin_add(){
+	if ! isUser "$1"; then
 		printf "admin: $1 is not a valid user.\n" >&2
 		exit 1
-	elif isAdmin $1; then
+	elif isAdmin "$1"; then
 		printf "admin: $1 is already an admin.\n" >&2
 		exit 1
 	fi
-	printf "$1\n" >> $GK_ADMINS
+	printf "$1\n" >> "$GK_ADMINLIST"
 	printf "$1 is now an admin.\n"
 }
 
 
-rmAdmin(){
-	if ! isUser $1; then
+admin_rm(){
+	if ! isUser "$1"; then
 		printf "admin: $1 is not a valid user.\n" >&2
 		exit 1
-	elif ! isAdmin $1; then
+	elif ! isAdmin "$1"; then
 		printf "admin: $1 is not an admin.\n" >&2
 		exit 1
-	elif [ $1 = $GK_USER ]; then
+	elif [ "$1" = "$GK_USER" ]; then
 		printf "admin: You can't remove yourself (the owner) from the admins." >&2
 		exit 1
 	fi
-	sed -i "/$1/d" $GK_ADMINS
+	sed -i "/$1/d" "$GK_ADMINLIST"
 	printf "$1 has been removed from the admins.\n"
 }
 
 
 case "$1" in
 	"ls")
-		lsAdmin
+		admin_ls
 		;;
 	"add")
 		shift
-		addAdmin $@
+		admin_add $@
 		;;
 	"rm")
 		shift
-		rmAdmin $@
+		admin_rm $@
 		;;
 	"--help" | "-h")
 		printf "%s\n%s\n" "$DESCRIPTION" "$USAGE"

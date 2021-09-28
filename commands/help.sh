@@ -1,6 +1,6 @@
 #!/bin/sh
 
-. $GK_LIB/users.sh
+. "$GK_LIB/users.sh"
 
 printf "Available commands for user $GK_USER:\n"
 
@@ -21,3 +21,4 @@ fi
 printf "\n"
 printf "repo:\tmanage repos\n"
 printf "key:\tmanage ssh public keys\n"
+printf "help:\tshow this help\n"
