@@ -89,6 +89,7 @@ if [ "$1" = "-c" ]; then
 	shift
 	handleGit $1 ||	launchCommand $1
 else
+	printf "$GK_MOTD\n"
 	printf "Hi, $GK_USER!\n"
 	if [ "$GK_INTERACTIVE" = "true" ]; then
 		interactive

@@ -37,6 +37,9 @@ GK_ARCHIVE_PATH="$GK_PATH/archived"
 # active (true/false)
 GK_INTERACTIVE=true
 
+# message of the day
+GK_MOTD=$(cat "$GK_PATH/motd")
+
 # normal prompt
 GK_PROMPT="\nGitKiss > "
 

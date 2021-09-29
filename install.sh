@@ -26,6 +26,7 @@ if [ -f "$GK_REPO_PATH" ]; then
 	mv "$GK_REPO_PATH" "$GK_ARCHIVE_PATH"
 fi
 mkdir -p "$GK_REPO_PATH"
+echo > ~/.hushlogin
 
 sed -i "s/GK_PATH/$GK_PATH/" $GK_PATH/gitkiss-daemon.service
 
