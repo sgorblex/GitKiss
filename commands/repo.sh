@@ -4,17 +4,17 @@ DESCRIPTION="repo: manage your repositories"
 USAGE="USAGE: repo [-h | --help] COMMAND [flags] [arguments]
 
 Where COMMAND is one of:
-	ls [verb] [arguments]	lists the repositories you have access to (see ls --help)
-	new [repo name]		creates a new repository with the specified name
-	rm [repo name]		deletes the repository with the specified name
-	publish [repo name]	publishes the repository with the specified name
-				to git-daemon (read only git protocol)
-	unpublish [repo name]	unpublishes the repository with the specified name
-				from git-daemon (git protocol)
-	perm [verb] [arguments]	lists/sets permissions for your repos
+	ls [-h | --help] [verb] [arguments]	lists the repositories you have access to (see --help)
+	new [repo name]				creates a new repository with the specified name
+	rm [repo name]				deletes the repository with the specified name
+	publish [repo name]			publishes the repository with the specified name
+						to git-daemon (read only git protocol)
+	unpublish [repo name]			unpublishes the repository with the specified name
+						from git-daemon (git protocol)
+	perm [verb] [arguments]			lists/sets permissions for your repos
 
 OPTIONS:
-	-h | --help		shows this help"
+	-h | --help				shows this help"
 
 set -e
 
@@ -49,7 +49,7 @@ OPTIONS:
 	repo_ls_mine(){
 		printf "Repositories owned by $GK_USER:\n" >&2
 
-		for repo in "$GK_REPO_PATH/$GK_USER/"*; do
+		for repo in "$GK_REPO_PATH/$GK_USER/"*.git; do
 			repo="${repo##*/}"
 			printf "${repo%.git}\n"
 		done
@@ -57,7 +57,7 @@ OPTIONS:
 
 	repo_ls_all(){
 		for user in $(cat "$GK_USERLIST"); do
-			for repo in "$GK_REPO_PATH/$user/"*; do
+			for repo in "$GK_REPO_PATH/$user/"*.git; do
 				if grep -Ex "$GK_USER: rw?\+?" "$repo/gk_perms" &>/dev/null; then
 					reponame="${repo##*/}"
 					printf "$user/${reponame%.git}: "
@@ -212,7 +212,7 @@ Where PERM is one of:
 
 
 OPTIONS:
-	-h | --help		shows this help"
+	-h | --help			shows this help"
 
 	repo_perm_ls(){
 		if [ -z "$1" ]; then

@@ -10,7 +10,7 @@ Where COMMAND is one of:
 	rename [key name] [new name]	renames the specified key with the specified new name
 
 OPTIONS:
-	-h | --help		shows this help"
+	-h | --help			shows this help"
 
 set -e
 
