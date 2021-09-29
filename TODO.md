@@ -2,11 +2,13 @@
 
 
 ## Improvements
+- implement git daemon
 - check for unnecessary arguments in commands (check arg number prior to executing the verbs)
 - check when launching scripts that they run from the shell (so env variables are set) and/or set some fallback mechanism for when commands are not run by the shell
 - write code documentation
 - write user documentation
 - implement conf limits (repo number, user number, etc.)
+- user command: add rename verb
 
 ### Keys
 - better check for ssh pubkey validity (not even `ssh-keygen -l` really works)
