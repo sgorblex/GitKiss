@@ -69,21 +69,3 @@ GK_USERLIST="$GK_PATH/users"
 
 # list of existing admins
 GK_ADMINLIST="$GK_PATH/admins"
-
-
-
-
-
-# exporting set configuration
-export GK_OWNER
-export GK_REPO_PATH
-export GK_MAX_REPOS
-export GK_ARCHIVE_PATH
-export GK_INTERACTIVE
-export GK_PROMPT
-export GK_ERR_PROMPT
-export GK_MAX_USERS
-export GK_AUTHORIZED_KEYS
-export GK_MAX_KEYS
-export GK_USERLIST
-export GK_ADMINLIST

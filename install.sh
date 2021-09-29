@@ -4,11 +4,10 @@
 
 set -e
 
-export GK_PATH="${0%/*}"
-export GK_CONF="$GK_PATH/conf.sh"
-export GK_COMMANDS="$GK_PATH/commands"
-export GK_LIB="$GK_PATH/lib"
-. "$GK_CONF"
+GK_PATH="${0%/*}"
+GK_CONF="$GK_PATH/conf.sh"
+GK_LIB="$GK_PATH/lib"
+. "$GK_LIB/conf.sh"
 
 . "$GK_LIB/pubKeys.sh"
 
@@ -27,6 +26,8 @@ if [ -f "$GK_REPO_PATH" ]; then
 	mv "$GK_REPO_PATH" "$GK_ARCHIVE_PATH"
 fi
 mkdir -p "$GK_REPO_PATH"
+
+sed -i "s/GK_PATH/$GK_PATH/" $GK_PATH/gitkiss-daemon.service
 
 printf "Insert owner's key here:\n"
 while true; do

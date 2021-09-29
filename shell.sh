@@ -2,11 +2,11 @@
 
 set -e
 
-export GK_PATH="${0%/*}"
-export GK_CONF="$GK_PATH/conf.sh"
-export GK_COMMANDS="$GK_PATH/commands"
-export GK_LIB="$GK_PATH/lib"
-. "$GK_CONF"
+GK_PATH="${0%/*}"
+GK_CONF="$GK_PATH/conf.sh"
+GK_COMMANDS="$GK_PATH/commands"
+GK_LIB="$GK_PATH/lib"
+. "$GK_LIB/conf.sh"
 
 . "$GK_LIB/perms.sh"
 

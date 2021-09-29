@@ -1,0 +1,18 @@
+[Unit]
+Description=Git Daemon for GitKiss
+
+[Service]
+ExecStart=GK_PATH/daemon.sh
+
+Restart=always
+RestartSec=500ms
+
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=gitkiss-daemon
+
+User=gitkiss
+Group=gitkiss
+
+[Install]
+WantedBy=multi-user.target
