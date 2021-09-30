@@ -133,7 +133,7 @@ repo_new() {
 		exit 1
 	fi
 
-	if matches "$1" ".*/.*"; then
+	if matches "$1" '.*/.*'; then
 		printf 'repo: new: "%s" is not a valid name.\n' "$1" >&2
 		exit 1
 	fi

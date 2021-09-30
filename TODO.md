@@ -9,6 +9,7 @@
 - write user documentation
 - implement conf limits (repo number, user number, etc.)
 - user command: add rename verb
+- user removal should remove every permission rule which includes that user
 
 ### Keys
 - better check for ssh pubkey validity (not even `ssh-keygen -l` really works)
