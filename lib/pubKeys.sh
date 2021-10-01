@@ -19,5 +19,5 @@ keyPreamble(){
 
 # existsKey takes a username and a key name and returns 0 if username has a key named name
 existsKey(){
-	grep -Ex "$(keyPreamble $1).* $2" "$GK_AUTHORIZED_KEYS" &>/dev/null
+	grep -Ex "$(keyPreamble $1).* $2" "$GK_AUTHORIZED_KEYS" >/dev/null
 }

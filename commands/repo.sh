@@ -47,7 +47,7 @@ OPTIONS:
 	-h | --help		shows this help"
 
 	repo_ls_mine(){
-		printf "Repositories owned by $GK_USER:\n" >&2
+		printf "Repositories owned by $GK_USER:\n"
 
 		for repo in "$GK_REPO_PATH/$GK_USER/"*.git; do
 			repo="${repo##*/}"
@@ -58,7 +58,7 @@ OPTIONS:
 	repo_ls_all(){
 		for user in $(cat "$GK_USERLIST"); do
 			for repo in "$GK_REPO_PATH/$user/"*.git; do
-				if grep -Ex "$GK_USER: rw?\+?" "$repo/gk_perms" &>/dev/null; then
+				if grep -Ex "$GK_USER: rw?\+?" "$repo/gk_perms" >/dev/null; then
 					reponame="${repo##*/}"
 					printf "$user/${reponame%.git}: "
 					sed -n "s/^$GK_USER: \(rw\?\+\?\)/\1/p" "$repo/gk_perms"
@@ -77,10 +77,10 @@ OPTIONS:
 			exit 1
 		fi
 
-		printf "Repositories owned by $1 that you have access to:\n" >&2
+		printf "Repositories owned by $1 that you have access to:\n"
 
 		for repo in "$GK_REPO_PATH/$1/"*; do
-			if grep -Ex "$GK_USER: rw?\+?" "$repo/gk_perms" &>/dev/null; then
+			if grep -Ex "$GK_USER: rw?\+?" "$repo/gk_perms" >/dev/null; then
 				reponame="${repo##*/}"
 				printf "${reponame%.git}: "
 				sed -n "s/^$GK_USER: \(rw\?\+\?\)/\1/p" "$repo/gk_perms"
@@ -171,7 +171,7 @@ repo_publish() {
 		exit 1
 	fi
 
-	printf > "$repo_path/git-daemon-export-ok" 
+	printf "" > "$repo_path/git-daemon-export-ok"
 	printf "Repository published successfully.\n"
 }
 
@@ -189,13 +189,13 @@ repo_unpublish() {
 		exit 1
 	fi
 
-	if [ -f "$repo_path/git-daemon-export-ok" ]; then
-		printf "repo: unpublish: This repo is already public.\n" >&2
+	if [ ! -f "$repo_path/git-daemon-export-ok" ]; then
+		printf "repo: unpublish: This repo is not public.\n" >&2
 		exit 1
 	fi
 
 	rm "$repo_path/git-daemon-export-ok" 
-	printf "Repository unpublished successfully."
+	printf "Repository unpublished successfully.\n"
 }
 
 repo_perm(){

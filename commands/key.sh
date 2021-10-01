@@ -51,7 +51,7 @@ key_add(){
 
 	completeKey="$(keyPreamble "$GK_USER")$(nameKey "$key" "$1")"
 	printf "$completeKey\n" >> "$GK_AUTHORIZED_KEYS"
-	if ! ssh-keygen -lf "$GK_AUTHORIZED_KEYS" &> /dev/null; then
+	if ! ssh-keygen -lf "$GK_AUTHORIZED_KEYS" >/dev/null 2>&1 ; then
 		printf "\nAn error occurred. Are you sure the key was valid?\n" >&2
 		sed -i '$ d' "$GK_AUTHORIZED_KEYS"
 		exit 1

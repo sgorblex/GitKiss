@@ -8,5 +8,5 @@ isIn(){
 }
 
 matches(){
-	echo "$1" | grep -Ex "$2" &> /dev/null
+	printf "$1\n" | grep -Ex "$2" >/dev/null
 }
