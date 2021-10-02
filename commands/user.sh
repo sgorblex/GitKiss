@@ -5,8 +5,8 @@ USAGE="USAGE: user [-h | --help] COMMAND [arguments]
 
 Where COMMAND is one of:
 	ls			lists the existing users
-	new [username]		creates a new user with the specified name to the users
-	rm [username]		removes the specified user and their repos from the server
+	new <username>		creates a new user with the specified name to the users
+	rm <username>		removes the specified user and their repos from the server
 
 OPTIONS:
 	-h | --help		shows this help"

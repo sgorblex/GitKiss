@@ -1,17 +1,17 @@
 #!/bin/sh
 
 DESCRIPTION="repo: manage your repositories"
-USAGE="USAGE: repo [-h | --help] COMMAND [flags] [arguments]
+USAGE="USAGE: repo [-h | --help] COMMAND [flags] <arguments>
 
 Where COMMAND is one of:
-	ls [-h | --help] [verb] [arguments]	lists the repositories you have access to (see --help)
-	new [repo name]				creates a new repository with the specified name
-	rm [repo name]				deletes the repository with the specified name
-	publish [repo name]			publishes the repository with the specified name
+	ls [-h | --help] <verb> <arguments>	lists the repositories you have access to (see --help)
+	new <repo name>				creates a new repository with the specified name
+	rm <repo name>				deletes the repository with the specified name
+	publish <repo name>			publishes the repository with the specified name
 						to git-daemon (read only git protocol)
-	unpublish [repo name]			unpublishes the repository with the specified name
+	unpublish <repo name>			unpublishes the repository with the specified name
 						from git-daemon (git protocol)
-	perm [verb] [arguments]			lists/sets permissions for your repos
+	perm <verb> <arguments>			lists/sets permissions for your repos
 
 OPTIONS:
 	-h | --help				shows this help"
@@ -42,7 +42,8 @@ repo_ls() {
 Where VERB is one of:
 	mine			lists the repositories you own (default)
 	all			lists all the repositories you have access to
-	user [username]		lists the repositories owned by username that you have access to
+	user <username>		lists the repositories owned by username that you have access to
+	public [username]	list public repositories owned by username or by anyone if no username is given
 
 OPTIONS:
 	-h | --help		shows this help"
@@ -51,11 +52,7 @@ OPTIONS:
 		printf "Repositories owned by $GK_USER:\n"
 
 		for repo in $(listRepos "$GK_USER"); do
-			printf "$repo"
-			if isPublic "$GK_USER/$repo"; then
-				printf "   [public]"
-			fi
-			printf "\n"
+			printf "$repo\n"
 		done
 	}
 
@@ -90,6 +87,32 @@ OPTIONS:
 		done
 	}
 
+	repo_ls_public(){
+		if [ -z "$1" ]; then
+			printf "Public repositories:\n"
+			for user in $(listUsers); do
+				for repo in $(listRepos "$user"); do
+					if isPublic "$user/$repo"; then
+						printf "$user/$repo\n"
+					fi
+				done
+			done
+			exit 0
+		fi
+
+		if ! isUser "$1"; then
+			printf "repo: ls: user: $1 is not a valid user.\n" >&2
+			exit 1
+		fi
+
+		printf "Public repositories owned by $1:\n"
+		for repo in $(listRepos "$1"); do
+			if isPublic "$1/$repo"; then
+				printf "$repo\n"
+			fi
+		done
+	}
+
 	case "$1" in
 		"mine"|"")
 			repo_ls_mine
@@ -100,6 +123,10 @@ OPTIONS:
 		"user")
 			shift
 			repo_ls_user $@
+			;;
+		"public")
+			shift
+			repo_ls_public $@
 			;;
 		"--help" | "-h")
 			printf "$LS_USAGE\n"
@@ -201,11 +228,11 @@ repo_unpublish() {
 }
 
 repo_perm(){
-	PERM_USAGE="USAGE: repo perm [-h | --help] [VERB] [arguments]
+	PERM_USAGE="USAGE: repo perm [-h | --help] <VERB> <arguments>
 
 Where VERB is one of:
-	ls [repo]			lists user permissions for the specified repo
-	set [repo] [username] [PERM]	grants read (r) or read+write (rw) permission to the specified user
+	ls <repo>			lists user permissions for the specified repo
+	set <repo> <username> <PERM>	grants read (r) or read+write (rw) permission to the specified user
 
 Where PERM is one of:
 	r				read only

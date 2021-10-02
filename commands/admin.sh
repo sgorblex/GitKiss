@@ -5,8 +5,8 @@ USAGE="USAGE: admin [-h | --help] COMMAND [arguments]
 
 Where COMMAND is one of:
 	ls			lists the existing admins
-	add [username]		add the specified user to the admins
-	rm [admin name]		removes the specified user from the admins
+	add <username>		add the specified user to the admins
+	rm <admin name>		removes the specified user from the admins
 
 OPTIONS:
 	-h | --help		shows this help"

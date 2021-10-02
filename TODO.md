@@ -2,7 +2,6 @@
 
 
 ## Improvements
-- list public repos from all users (or from a specified user) (standalone command or integrated in preexistent)
 - implement conf limits (repo number, user number, etc.) (note: print limits in related commands' `--help`)
 - check for unnecessary arguments in commands (check arg number prior to executing the verbs)
 - check when launching scripts that they run from the shell (so env variables are set) and/or set some fallback mechanism for when commands are not run by the shell

@@ -5,9 +5,9 @@ USAGE="USAGE: key [-h | --help] COMMAND [flags] [arguments]
 
 Where COMMAND is one of:
 	ls				lists your active keys
-	add [key name]			adds a new key with the specified name
-	rm [key name]			deletes the key with the specified name
-	rename [key name] [new name]	renames the specified key with the specified new name
+	add <key name>			adds a new key with the specified name
+	rm <key name>			deletes the key with the specified name
+	rename <key name> <new name>	renames the specified key with the specified new name
 
 OPTIONS:
 	-h | --help			shows this help"
