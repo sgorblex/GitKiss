@@ -9,12 +9,14 @@ Where COMMAND is one of:
 	rm <username>		removes the specified user and their repos from the server
 
 OPTIONS:
-	-h | --help		shows this help"
+	-h | --help		shows this help
+
+Maximum number of server users is $GK_MAX_USERS by the current configuration"
 
 set -e
 
+. "$GK_LIB/keys.sh"
 . "$GK_LIB/users.sh"
-. "$GK_LIB/pubKeys.sh"
 
 
 if ! isAdmin "$GK_USER"; then
@@ -93,13 +95,14 @@ user_rm(){
 
 	sed -i "/^$1$/d" "$GK_USERLIST"
 	sed -i "/^$(keyPreamble $1)/d" "$GK_AUTHORIZED_KEYS"
-	printf "$1 has been removed from the users.\n"
 
 	for user in $(cat "$GK_USERLIST"); do
 		for repo in "$GK_REPO_PATH/$user/"*.git; do
 			sed -i "/^$GK_USER: \(rw\?\+\?\)/d" "$repo/gk_perms"
 		done
 	done
+
+	printf "$1 has been removed from the users.\n"
 }
 
 

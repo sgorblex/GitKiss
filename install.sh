@@ -9,7 +9,7 @@ GK_CONF="$GK_PATH/conf.sh"
 GK_LIB="$GK_PATH/lib"
 . "$GK_LIB/conf.sh"
 
-. "$GK_LIB/pubKeys.sh"
+. "$GK_LIB/keys.sh"
 
 SSH_DIR="${GK_AUTHORIZED_KEYS%/*}"
 
