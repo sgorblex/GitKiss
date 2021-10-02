@@ -60,6 +60,7 @@ handleGit(){
 	if [ "$repo" = "${repo##*/}" ]; then
 		repo="$GK_USER/$repo"
 	fi
+	repo="${repo%.git}"
 
 	case $1 in
 		"git-receive-pack")
