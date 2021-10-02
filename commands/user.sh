@@ -29,7 +29,7 @@ fi
 
 
 user_ls(){
-	cat "$GK_USERLIST"
+	listUsers
 }
 
 

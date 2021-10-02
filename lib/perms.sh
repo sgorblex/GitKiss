@@ -1,23 +1,43 @@
+# getPermsReadable returns the permission code corresponding to $1
+# arguments:
+# $1: readable permissions (none|rw?\+?)
 permCode(){
-	if [ "$1" = "r" ]; then
-		echo 1
-	elif [ "$1" = "rw" ]; then
-		echo 2
-	elif [ "$1" = "none" ]; then
-		echo 0
-	else
-		echo -1
-	fi
+	case "$1" in
+		"r")
+			echo 1
+			;;
+		"rw")
+			echo 2
+			;;
+		"rw+")
+			echo 3
+			;;
+		"none")
+			echo 0
+			;;
+		*)
+			echo -1
+	esac
 }
 
-# input format: owner/repo user
-getPerms(){
+# getPermsReadable returns readable permissions for $2 on repo $1
+# format:
+# $1: owner/repo
+# $2: username
+getPermsReadable(){
 	repo_path="$GK_REPO_PATH/$1.git"
 	perms_path="$repo_path/gk_perms"
 	if ! grep -Ex "$2: rw?\+?" "$perms_path" >/dev/null; then
-		echo 0
+		echo none
 	else
-		perms="$(sed -n "s/$2: \(rw\?\)+\?\$/\1/p" $perms_path)"
-		echo $(permCode "$perms")
+		echo "$(sed -n "s/$2: \(rw\?+\?\)\$/\1/p" $perms_path)"
 	fi
+}
+
+# getPermsReadable returns the permission code for $2 on repo $1
+# arguments and format:
+# $1: owner/repo
+# $2: username
+getPerms(){
+	echo $(permCode "$(getPermsReadable $@)")
 }

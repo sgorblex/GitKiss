@@ -28,7 +28,7 @@ fi
 
 
 admin_ls(){
-	cat "$GK_ADMINLIST"
+	listAdmins
 }
 
 

@@ -21,6 +21,7 @@ set -e
 . "$GK_LIB/users.sh"
 . "$GK_LIB/strings.sh"
 . "$GK_LIB/perms.sh"
+. "$GK_LIB/repos.sh"
 
 
 if ! isUser "$GK_USER"; then
@@ -49,20 +50,23 @@ OPTIONS:
 	repo_ls_mine(){
 		printf "Repositories owned by $GK_USER:\n"
 
-		for repo in "$GK_REPO_PATH/$GK_USER/"*.git; do
-			repo="${repo##*/}"
-			printf "${repo%.git}\n"
+		for repo in $(listRepos "$GK_USER"); do
+			printf "$repo"
+			if isPublic "$GK_USER/$repo"; then
+				printf "   [public]"
+			fi
+			printf "\n"
 		done
 	}
 
 	repo_ls_all(){
-		for user in $(cat "$GK_USERLIST"); do
-			for repo in "$GK_REPO_PATH/$user/"*.git; do
-				if grep -Ex "$GK_USER: rw?\+?" "$repo/gk_perms" >/dev/null; then
-					reponame="${repo##*/}"
-					printf "$user/${reponame%.git}: "
-					sed -n "s/^$GK_USER: \(rw\?\+\?\)/\1/p" "$repo/gk_perms"
-				fi
+		printf "Repositories that you have access to:\n"
+
+		for user in $(listUsers); do
+			for repo in $(listRepos "$user"); do
+				if [ $(getPerms "$user/$repo" "$GK_USER") -gt 0 ]; then
+					printf "$user/$repo:   $(getPermsReadable "$user/$repo" "$GK_USER")\n"
+			fi
 			done
 		done
 	}
@@ -79,11 +83,9 @@ OPTIONS:
 
 		printf "Repositories owned by $1 that you have access to:\n"
 
-		for repo in "$GK_REPO_PATH/$1/"*; do
-			if grep -Ex "$GK_USER: rw?\+?" "$repo/gk_perms" >/dev/null; then
-				reponame="${repo##*/}"
-				printf "${reponame%.git}: "
-				sed -n "s/^$GK_USER: \(rw\?\+\?\)/\1/p" "$repo/gk_perms"
+		for repo in $(listRepos "$1"); do
+			if [ $(getPerms "$1/$repo" "$GK_USER") -gt 0 ]; then
+				printf "$repo: $(getPermsReadable "$1/$repo" "$GK_USER")\n"
 			fi
 		done
 	}
