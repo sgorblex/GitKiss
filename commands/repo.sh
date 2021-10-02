@@ -14,14 +14,16 @@ Where COMMAND is one of:
 	perm <verb> <arguments>			lists/sets permissions for your repos
 
 OPTIONS:
-	-h | --help				shows this help"
+	-h | --help				shows this help
+
+Maximum number of repositories per user is $GK_MAX_REPOS by the current configuration"
 
 set -e
 
-. "$GK_LIB/users.sh"
-. "$GK_LIB/strings.sh"
 . "$GK_LIB/perms.sh"
 . "$GK_LIB/repos.sh"
+. "$GK_LIB/strings.sh"
+. "$GK_LIB/users.sh"
 
 
 if ! isUser "$GK_USER"; then

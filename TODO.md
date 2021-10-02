@@ -10,6 +10,7 @@
 - user command: add rename verb (?)
 - write decent code with a decent interface
 - configuration validity check
+- ditch `isIn` (?)
 
 ### Keys
 - better check for ssh pubkey validity (not even `ssh-keygen -l` really works)

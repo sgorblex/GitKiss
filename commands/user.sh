@@ -39,6 +39,11 @@ user_new(){
 		exit 1
 	fi
 
+	if [ $(userNumber) -ge "$GK_MAX_USERS" ]; then
+		printf "user: new: You cannot create any more users. Maximum number $GK_MAX_USERS exceeded.\n" >&2
+		exit 1
+	fi
+
 	printf "Insert $1's key here:\n"
 	while true; do
 		read key
