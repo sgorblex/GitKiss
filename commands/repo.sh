@@ -101,7 +101,7 @@ OPTIONS:
 		fi
 
 		if ! isUser "$1"; then
-			printf "repo: ls: user: $1 is not a valid user.\n" >&2
+			printf "repo: ls: public: $1 is not a valid user.\n" >&2
 			exit 1
 		fi
 
@@ -143,16 +143,14 @@ repo_rm() {
 		printf "repo: rm: Insert repo name as argument\n" >&2
 		exit 1
 	fi
-
 	repo="${@%.git}"
-	repo_path="$GK_REPO_PATH/$GK_USER/${repo}.git"
 
-	if [ ! -d "$repo_path" ]; then
+	if ! isRepo "$GK_USER/$repo"; then
 		printf "repo: rm: A repository with such name does not exist.\n" >&2
 		exit 1
 	fi
 
-	rm -rf "$repo_path"
+	rmRepo "$GK_USER/$repo"
 	printf "Repository deleted successfully.\n"
 }
 
@@ -161,23 +159,24 @@ repo_new() {
 		printf "repo: new: Insert repo name as argument.\n" >&2
 		exit 1
 	fi
+	repo="${1%.git}"
 
-	if matches "$1" '.*/.*'; then
-		printf 'repo: new: "%s" is not a valid name.\n' "$1" >&2
+	if [ $(repoNumber "$GK_USER") -ge "$GK_MAX_REPOS" ]; then
+		printf "repo: new: You cannot create any more repos. Maximum number $GK_MAX_REPOS exceeded.\n" >&2
 		exit 1
 	fi
 
-	repo="${@%.git}"
-	repo_path="$GK_REPO_PATH/$GK_USER/${repo}.git"
+	if ! isValidRepoName "$repo"; then
+		printf 'repo: new: "%s" is not a valid name.\n' "$repo" >&2
+		exit 1
+	fi
 
-	if [ -d "$repo_path" ]; then
+	if isRepo "$GK_USER/$repo"; then
 		printf 'repo: new: the repository "%s" already exists.\n' "$repo" >&2
 		exit 1
 	fi
 
-	mkdir "$repo_path"
-	git init --bare -q "$repo_path"
-	printf "$GK_USER: rw+\n" > "$repo_path/gk_perms"
+	newRepo "$GK_USER/$repo"
 	printf "Repository created successfully.\n"
 }
 
@@ -186,21 +185,19 @@ repo_publish() {
 		printf "repo: publish: Insert repo name as argument.\n" >&2
 		exit 1
 	fi
+	repo="${1%.git}"
 
-	repo="${@%.git}"
-	repo_path="$GK_REPO_PATH/$GK_USER/${repo}.git"
-
-	if [ ! -d "$repo_path" ]; then
+	if ! isRepo "$GK_USER/$repo"; then
 		printf "repo: publish: A repository with such name does not exist.\n" >&2
 		exit 1
 	fi
 
-	if [ -f "$repo_path/git-daemon-export-ok" ]; then
+	if isPublic "$GK_USER/$repo"; then
 		printf "repo: publish: This repo is already public.\n" >&2
 		exit 1
 	fi
 
-	printf "" > "$repo_path/git-daemon-export-ok"
+	publishRepo "$GK_USER/$repo"
 	printf "Repository published successfully.\n"
 }
 
@@ -209,21 +206,20 @@ repo_unpublish() {
 		printf "repo: unpublish: Insert repo name as argument\n" >&2
 		exit 1
 	fi
+	repo="${1%.git}"
 
-	repo="${@%.git}"
-	repo_path="$GK_REPO_PATH/$GK_USER/${repo}.git"
-
-	if [ ! -d "$repo_path" ]; then
+	if ! isRepo "$GK_USER/$1"; then
 		printf "repo: unpublish: A repository with such name does not exist.\n" >&2
 		exit 1
 	fi
 
-	if [ ! -f "$repo_path/git-daemon-export-ok" ]; then
+	if ! isPublic "$GK_USER/$1"; then
 		printf "repo: unpublish: This repo is not public.\n" >&2
 		exit 1
 	fi
+	exit 42
 
-	rm "$repo_path/git-daemon-export-ok" 
+	unpublishRepo "$GK_USER/$repo"
 	printf "Repository unpublished successfully.\n"
 }
 
@@ -249,7 +245,7 @@ OPTIONS:
 			exit 1
 		fi
 
-		repo="${@%.git}"
+		repo="${1%.git}"
 		repo_path="$GK_REPO_PATH/$GK_USER/${repo}.git"
 
 		if [ ! -d "$repo_path" ]; then

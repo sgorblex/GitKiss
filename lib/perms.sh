@@ -1,4 +1,4 @@
-# getPermsReadable returns the permission code corresponding to $1
+# getPermsReadable echoes the permission code corresponding to $1.
 # arguments:
 # $1: readable permissions (none|rw?\+?)
 permCode(){
@@ -20,8 +20,8 @@ permCode(){
 	esac
 }
 
-# getPermsReadable returns readable permissions for $2 on repo $1
-# format:
+# getPermsReadable echoes readable permissions for $2 on repo $1.
+# arguments and format:
 # $1: owner/repo
 # $2: username
 getPermsReadable(){
@@ -34,7 +34,7 @@ getPermsReadable(){
 	fi
 }
 
-# getPermsReadable returns the permission code for $2 on repo $1
+# getPermsReadable echoes the permission code for $2 on repo $1.
 # arguments and format:
 # $1: owner/repo
 # $2: username

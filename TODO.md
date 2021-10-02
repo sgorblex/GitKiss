@@ -9,6 +9,7 @@
 - write user documentation
 - user command: add rename verb (?)
 - write decent code with a decent interface
+- configuration validity check
 
 ### Keys
 - better check for ssh pubkey validity (not even `ssh-keygen -l` really works)
