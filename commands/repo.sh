@@ -52,10 +52,7 @@ OPTIONS:
 
 	repo_ls_mine(){
 		printf "Repositories owned by $GK_USER:\n"
-
-		for repo in $(listRepos "$GK_USER"); do
-			printf "$repo\n"
-		done
+		listRepos "$GK_USER"
 	}
 
 	repo_ls_all(){
@@ -246,17 +243,15 @@ OPTIONS:
 			printf "repo: perm: ls: Insert repo name as argument\n" >&2
 			exit 1
 		fi
-
 		repo="${1%.git}"
-		repo_path="$GK_REPO_PATH/$GK_USER/${repo}.git"
 
-		if [ ! -d "$repo_path" ]; then
+		if ! isRepo "$GK_USER/$repo"; then
 			printf "repo: perm: ls: A repository with such name does not exist.\n" >&2
 			exit 1
 		fi
 
 		printf "Permissions for repo $repo:\n"
-		cat "$repo_path/gk_perms"
+		getRepoPerms "$GK_USER/$repo"
 	}
 
 	repo_perm_set(){
@@ -264,12 +259,9 @@ OPTIONS:
 			printf "repo: perm: grant: Insert repo name as argument\n" >&2
 			exit 1
 		fi
-
 		repo="${1%.git}"
-		repo_path="$GK_REPO_PATH/$GK_USER/${repo}.git"
-		perms_path="$repo_path/gk_perms"
 
-		if [ ! -d "$repo_path" ]; then
+		if ! isRepo "$GK_USER/$repo"; then
 			printf "repo: perm: set: A repository with such name does not exist.\n" >&2
 			exit 1
 		fi
@@ -284,17 +276,12 @@ OPTIONS:
 			exit 1
 		fi
 
-		perm_code="$(permCode "$3")"
-		if [ "$perm_code" -eq -1 ]; then
+		if [ "$(permCode "$3")" -eq -1 ]; then
 			printf "repo: perm: set: Invalid permissions: $3.\n" >&2
 			exit 1
 		fi
 
-		sed -i "/^$2: rw\?\$/d" "$perms_path"
-		if [ "$perm_code" -ne 0 ]; then
-			printf "$2: $3\n" >> "$perms_path"
-		fi
-
+		setPerms "$GK_USER/$repo" "$2" "$3"
 		printf "Permissions set.\n"
 	}
 

@@ -1,6 +1,7 @@
 . $GK_LIB/strings.sh
 . $GK_LIB/keys.sh
 . $GK_LIB/repos.sh
+. $GK_LIB/perms.sh
 
 # listAdmins lists the server's admins.
 listAdmins(){
@@ -78,8 +79,7 @@ rmUser(){
 
 	for user in $(listUsers); do
 		for repo in $(listRepos "$1"); do
-			# TODO: substitute with perm library function
-			sed -i "/^$GK_USER: \(rw\?\+\?\)/d" "$GK_REPO_PATH/$1/$repo.git/gk_perms"
+			setPerms "$user/$repo" "$1" "none"
 		done
 	done
 }

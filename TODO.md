@@ -7,7 +7,6 @@
 - write code documentation
 - write user documentation
 - user command: add rename verb (?)
-- write decent code with a decent interface
 - configuration validity check
 - ditch `isIn` (?)
 

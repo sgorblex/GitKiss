@@ -12,6 +12,7 @@ export GK_REPO_PATH
 export GK_MAX_REPOS
 export GK_ARCHIVE_PATH
 export GK_INTERACTIVE
+export GK_MOTD
 export GK_PROMPT
 export GK_ERR_PROMPT
 export GK_MAX_USERS
