@@ -40,7 +40,8 @@ admin_add(){
 		printf "admin: $1 is already an admin.\n" >&2
 		exit 1
 	fi
-	printf "$1\n" >> "$GK_ADMINLIST"
+
+	addAdmin "$1"
 	printf "$1 is now an admin.\n"
 }
 
@@ -56,7 +57,8 @@ admin_rm(){
 		printf "admin: You can't remove yourself (the owner) from the admins." >&2
 		exit 1
 	fi
-	sed -i "/$1/d" "$GK_ADMINLIST"
+
+	rmAdmin "$1"
 	printf "$1 has been removed from the admins.\n"
 }
 

@@ -16,6 +16,7 @@
 - make the code more secure to avoid argument injection (e.g. arguments containing `/`)
 
 ## Ideas
+- up arrow key for last command in interactive shell
 - various permissions for admins (e.g. add users but not delete them, manage pubkeys, etc.)
 - config flag to make every repo accessible by the owner, another flag for admins (?). Should this also give permission to manage?
 - migrate to `command` instead of `environment` in `authorized_keys` (and complete non-root compatibility)

@@ -46,23 +46,16 @@ user_new(){
 		exit 1
 	fi
 
-	printf "Insert $1's key here:\n"
+	printf "Insert $1's public key here:\n"
 	while true; do
-		read key
+		read key || exit 1
 		if isValidKey "$key"; then
 			break
 		fi
 		printf "Invalid key. Insert a valid key:\n" >&2
 	done
-	namedKey=$(nameKey "$key" "default")
-	printf 'no-port-forwarding,no-X11-forwarding,no-agent-forwarding,environment="GK_USER=%s" %s\n' "$1" "$namedKey" >> "$GK_AUTHORIZED_KEYS"
-	if ! ssh-keygen -lf "$GK_AUTHORIZED_KEYS" > /dev/null; then
-		printf "\nAn error occurred. Are you sure the key was valid?\n" >&2
-		sed -i '$ d' "$GK_AUTHORIZED_KEYS"
-		exit 1
-	fi
-	printf "$1\n" >> "$GK_USERLIST"
-	mkdir "$GK_REPO_PATH/$1"
+
+	newUser "$1" "$key"
 	printf "User $1 has been added.\n"
 }
 
@@ -86,22 +79,7 @@ user_rm(){
 		exit 0
 	fi
 
-	if [ -n "$GK_ARCHIVE_PATH" ]; then
-		mkdir -p "$GK_ARCHIVE_PATH"
-		mv "$GK_REPO_PATH/$1" "$GK_ARCHIVE_PATH/"
-	else
-		rm -rf "$GK_REPO_PATH/$1"
-	fi
-
-	sed -i "/^$1$/d" "$GK_USERLIST"
-	sed -i "/^$(keyPreamble $1)/d" "$GK_AUTHORIZED_KEYS"
-
-	for user in $(cat "$GK_USERLIST"); do
-		for repo in "$GK_REPO_PATH/$user/"*.git; do
-			sed -i "/^$GK_USER: \(rw\?\+\?\)/d" "$repo/gk_perms"
-		done
-	done
-
+	rmUser "$1"
 	printf "$1 has been removed from the users.\n"
 }
 
