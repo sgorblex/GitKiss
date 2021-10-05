@@ -10,3 +10,8 @@ isIn(){
 matches(){
 	printf "$1\n" | grep -Ex "$2" >/dev/null
 }
+
+# $1 must be a single word
+isOneWord(){
+	[ "$1" = "$@" ]
+}

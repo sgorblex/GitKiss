@@ -21,9 +21,6 @@ GK_OWNER="sgorblex"
 
 # REPOSITORIES
 
-# path of the stored repositories
-GK_REPO_PATH="$HOME/repositories"
-
 # maximum number of repositories per user
 GK_MAX_REPOS=99
 
@@ -57,18 +54,24 @@ GK_MAX_USERS=30
 
 # SSH KEYS
 
-# authorized_keys path (leave default if not sure)
-GK_AUTHORIZED_KEYS="$HOME/.ssh/authorized_keys"
-
 # maximum number of keys per user
 GK_MAX_KEYS=10
 
 
 
-# INSTANCE FILES
+
+
+# PERMANENT SETTINGS
+# the following settings should only be set by install.sh and modifying them may break your installation. If you want to modify these, make sure to move the files accordingly.
+
+# path of the stored repositories
+GK_REPO_PATH="$HOME/repositories"
 
 # list of existing users
 GK_USERLIST="$GK_PATH/users"
 
 # list of existing admins
 GK_ADMINLIST="$GK_PATH/admins"
+
+# authorized_keys path
+GK_AUTHORIZED_KEYS="$HOME/.ssh/authorized_keys"

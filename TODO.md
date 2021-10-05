@@ -2,6 +2,7 @@
 
 
 ## Improvements
+- add file inclusion check (as in C header files)
 - check for unnecessary arguments in commands (check arg number prior to executing the verbs)
 - check when launching scripts that they run from the shell (so env variables are set) and/or set some fallback mechanism for when commands are not run by the shell
 - write code documentation
@@ -21,3 +22,4 @@
 - migrate to `command` instead of `environment` in `authorized_keys` (and complete non-root compatibility)
 - alphabetic storage of admins and users for access with binary search
 - make everything work with names containing spaces (except users: those should be checked not to have spaces) (?)
+- client side completion engine (user list?)
