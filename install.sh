@@ -89,7 +89,7 @@ if [ "$SYSTEM_USER" != $(whoami) ]; then
 		-t "$GK_AUTHORIZED_KEYS" \
 		-o "$GK_OWNER" \
 		-k "$KEYFILE"
-	if command -v systemctl; then
+	if [ -d /usr/lib/systemd/system ]; then
 		sed "s:GK_PATH:$GK_PATH:" $GK_PATH/gitkiss-daemon.service > /usr/lib/systemd/system/gitkiss-daemon.service
 		systemctl enable --now gitkiss-daemon.service
 	fi
