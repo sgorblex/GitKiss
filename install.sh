@@ -13,6 +13,7 @@ Where OPTIONS are from [default in square brackets]:
 	-t PATH	 	authorized_keys file path [\$HOME/.ssh/authorized_keys]
 	-o PATH	 	owner's GitKiss username [stdin]
 	-k PATH	 	owner's public key file [stdin]
+	-f		force installation if user or installation directory already exist
 
 	-h	shows this help
 
@@ -27,7 +28,7 @@ help(){
 REPO_URL="https://github.com/sgorblex/GitKiss.git"
 
 OPTIND=1
-while getopts "hs:d:p:r:u:a:t:o:k:" opt; do
+while getopts "hs:d:p:r:u:a:t:o:k:f" opt; do
 	case "$opt" in
 		h)
 			help 0
@@ -62,6 +63,9 @@ while getopts "hs:d:p:r:u:a:t:o:k:" opt; do
 		k)
 			KEYFILE="$OPTARG"
 			;;
+		f)
+			FORCE=yes
+			;;
 	esac
 done
 shift $((OPTIND-1))
@@ -77,8 +81,8 @@ GK_AUTHORIZED_KEYS=${GK_AUTHORIZED_KEYS:-"$USER_HOME/.ssh/authorized_keys"}
 SSH_DIR="${GK_AUTHORIZED_KEYS%/*}"
 
 if [ "$SYSTEM_USER" != $(whoami) ]; then
-	sudo useradd -md "$USER_HOME" "$SYSTEM_USER"
-	sudo -u "$SYSTEM_USER" git clone "$REPO_URL" "$GK_PATH"
+	sudo useradd -md "$USER_HOME" "$SYSTEM_USER" || [ -n $FORCE ]
+	sudo -u "$SYSTEM_USER" git clone "$REPO_URL" "$GK_PATH" || [ -n $FORCE ]
 	sudo -u "$SYSTEM_USER" "$GK_PATH/install.sh" \
 		-s "$SYSTEM_USER" \
 		-d "$USER_HOME" \
@@ -90,8 +94,9 @@ if [ "$SYSTEM_USER" != $(whoami) ]; then
 		-o "$GK_OWNER" \
 		-k "$KEYFILE"
 	if [ -d /usr/lib/systemd/system ]; then
-		sed "s:GK_PATH:$GK_PATH:" $GK_PATH/gitkiss-daemon.service > /usr/lib/systemd/system/gitkiss-daemon.service
-		systemctl enable --now gitkiss-daemon.service
+		sudo -u $SYSTEM_USER sed -i "s:GK_PATH:$GK_PATH:" $GK_PATH/gitkiss-daemon.service
+		sudo cp $GK_PATH/gitkiss-daemon.service /usr/lib/systemd/system/gitkiss-daemon.service
+		sudo systemctl enable --now gitkiss-daemon.service
 	fi
 
 else
