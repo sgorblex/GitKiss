@@ -41,6 +41,11 @@ user_new(){
 		exit 1
 	fi
 
+	if ! isValidUserName "$1"; then
+		printf "user: invalid username: $1.\n" >&2
+		exit 1
+	fi
+
 	if [ $(userNumber) -ge "$GK_MAX_USERS" ]; then
 		printf "user: new: You cannot create any more users. Maximum number $GK_MAX_USERS exceeded.\n" >&2
 		exit 1

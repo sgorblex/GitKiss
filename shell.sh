@@ -10,11 +10,6 @@ GK_LIB="$GK_PATH/lib"
 
 . "$GK_LIB/perms.sh"
 
-if [ -z "$GK_USER" ]; then
-	printf "This shell is supposed to be executed via ssh only. You appear to not have any GitKiss username\n" >&2
-	exit 1
-fi
-
 
 launchCommand() {
 	cmd="$1"
@@ -86,9 +81,15 @@ handleGit(){
 }
 
 
-if [ "$1" = "-c" ]; then
+export GK_USER="$1"
+if [ -z "$GK_USER" ]; then
+	printf "This shell is supposed to be executed via ssh only. You appear to not have any GitKiss username\n" >&2
+	exit 1
+fi
+
+if [ -n "$SSH_ORIGINAL_COMMAND" ]; then
 	shift
-	handleGit $1 ||	launchCommand $1
+	handleGit $SSH_ORIGINAL_COMMAND || launchCommand $SSH_ORIGINAL_COMMAND
 else
 	printf "$GK_MOTD\n"
 	printf "Hi, $GK_USER!\n"

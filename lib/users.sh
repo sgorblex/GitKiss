@@ -57,7 +57,7 @@ rmAdmin(){
 # arguments:
 # $1: candidate name
 isValidUserName(){
-	isOneWord $1 &&	! matches "$1" '.*/.*'
+	isOneWord $1 &&	! matches "$1" '.*[/:\|].*'
 }
 
 # newUser adds $1 to the server users with the pubkey $2.

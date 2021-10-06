@@ -1,5 +1,6 @@
 PUB_KEY_TYPE_RE="\(ssh-\(rsa\|dss\|ed25519\)\|ecdsa-sha2-nistp\(256\|384\|521\)\)"
-KEY_PREAMBLE='no-port-forwarding,no-X11-forwarding,no-agent-forwarding,environment="GK_USER='
+KEY_PREAMBLE_1="command=\"$GK_PATH/shell.sh "
+KEY_PREAMBLE_2=',no-port-forwarding,no-X11-forwarding,no-agent-forwarding'
 
 . $GK_LIB/strings.sh
 
@@ -23,7 +24,7 @@ isValidKey(){
 # arguments:
 # $1: username
 keyPreamble(){
-	printf '%s%s"' "$KEY_PREAMBLE" "$1"
+	printf '%s%s"%s' "$KEY_PREAMBLE_1" "$1" "$KEY_PREAMBLE_2"
 }
 
 # existsKey takes a username and a key name and returns 0 if username has a key named name
@@ -38,7 +39,7 @@ existsKey(){
 # arguments:
 # $1: keys' owner (a valid user)
 listKeys(){
-	cut -d ' ' -f 4- "$GK_AUTHORIZED_KEYS"
+	sed -n "s|^$(keyPreamble "$1") ||p" "$GK_AUTHORIZED_KEYS" | cut -d ' ' -f 3-
 }
 
 # keyNumber echoes the number of public keys owned by $1.
