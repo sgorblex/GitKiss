@@ -2,6 +2,7 @@
 
 
 ## Improvements
+- installer: support recovering from partial install
 - add file inclusion check (as in C header files)
 - check for unnecessary arguments in commands (check arg number prior to executing the verbs)
 - check when launching scripts that they run from the shell (so env variables are set) and/or set some fallback mechanism for when commands are not run by the shell

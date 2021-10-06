@@ -20,7 +20,9 @@ ssh-keygen -t ed25519 -f mykey
 
 Make sure you have `sudo` access and run:
 ```sh
-curl -sS https://raw.githubusercontent.com/sgorblex/GitKiss/master/install.sh | sh
+curl -O https://raw.githubusercontent.com/sgorblex/GitKiss/master/install.sh
+chmod +x install.sh
+./install.sh
 ```
 Choose the owner's nickname and paste their public key (`mykey.pub`).
 
@@ -28,10 +30,8 @@ Make sure you have an SSH server running.
 
 
 ### Custom install
-You may instead configure installation paths by downloading the script and using command line arguments as follows:
+You may instead configure installation paths by using command line arguments as follows:
 ```sh
-curl -OsS https://raw.githubusercontent.com/sgorblex/GitKiss/master/install.sh
-chmod +x install.sh
 ./install.sh --help
 ```
 However, default values should generally be fine.
