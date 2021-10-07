@@ -1,3 +1,21 @@
+# Copyright (C) 2021 Alessandro "sgorblex" Clerici Lorenzini.
+#
+# This file is part of GitKiss.
+#
+# GitKiss is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# GitKiss is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with GitKiss.  If not, see <https://www.gnu.org/licenses/>.
+
+
 PUB_KEY_TYPE_RE="\(ssh-\(rsa\|dss\|ed25519\)\|ecdsa-sha2-nistp\(256\|384\|521\)\)"
 KEY_PREAMBLE_1="command=\"$GK_PATH/shell.sh "
 KEY_PREAMBLE_2=',no-port-forwarding,no-X11-forwarding,no-agent-forwarding'
