@@ -5,6 +5,7 @@ GitKiss is a [SSH] [Git] server manager. It lets you create and organize users, 
 [Git]: https://en.wikipedia.org/wiki/Git
 
 
+
 ## Motivation
 Having a Git server is a big deal. And, by the way, you don't need an always-on server to have one. You can install GitKiss on your machine and just SSH into localhost. The purpose of GitKiss is providing something similar to [Gitolite] but with easier user/repo management.
 
@@ -36,27 +37,64 @@ You may instead configure installation paths by using command line arguments as 
 ```
 However, default values should generally be fine.
 
-The server is entirely passive, meaning there are no daemons running, except for git-daemon, which is enabled by default on systemd and serves the public repositories. If you so desire you can disable it with `systemctl disable --now gitkiss-daemon.service`.
+The server is entirely passive, meaning there are no daemons running, except for git-daemon, which is enabled by default on systemd (port 1234) and serves the public repositories. If you so desire you can disable it with `systemctl disable --now gitkiss-daemon.service`.
 
 
 
 ## Usage
-Assuming you are using the default system user `gitkiss` and your server is `host`:
+
+
+### Commands
+Assuming you are using the default system user `gitkiss` and your server is `host`, the command
 ```sh
 ssh -i mykey gitkiss@host help
 ```
 lists available commands for your user. Substitute `help` with your desired command.
 
-Alternatively (if the config doesn't disable it), just run
+
+### Interactive shell
+Unless the config disables it, run
 ```sh
 ssh -i mykey gitkiss@host
 ```
 to start the interactive shell, where you can launch any command until you write `exit` or hit <kbd>CTRL</kbd><kbd>D</kbd>.
 
+### Git commands
+You can push, pull or clone a repo you have access to with usual git commands, e.g.:
+```sh
+export GIT_SSH_COMMAND="ssh -i mykey"
+git clone gitkiss@host:repo_owner/repo_name
+```
+You can omit the repo owner if you want to clone one of your repos. To avoid the export, see [tips](#Ad-hoc-SSH-config). Of course, you cannot clone repos you don't have read permission on and you cannot push to repos you don't have write permission on.
 
-### TIPS
-- add the host to `~/.ssh/config` for easier SSH commands (e.g. `ssh gk` instead of `ssh -i key gitkiss@host`). See manual page `ssh_config(5)`.
-- add aliases within your shell to avoid writing long commands (e.g. `alias repo="ssh gitkiss repo"`)
+#### Published repos
+You can clone a public repo through git protocol with:
+```sh
+git clone git://host/repo_owner/repo_name
+```
+Public repositories are visible to anyone with network access to the daemon.
+
+
+
+### Tips
+
+#### Ad-hoc SSH config
+You can add host and key to `~/.ssh/config` for simpler SSH/Git commands. For example:
+```ssh_config
+Host gitkiss gk
+	HostName yourhost
+	User gitkiss
+	IdentitiesOnly yes
+	IdentityFile /path/to/private/key
+```
+will let you use commands like `ssh gk` instead of `ssh -i key gitkiss@host` and avoid exporting `GIT_SSH_COMMAND` in Git commands, e.g.:
+```sh
+git clone gk:repo_owner/repo_name
+```
+See manual page `ssh_config(5)` for more info.
+
+#### Aliases
+Add aliases within your shell to avoid writing long commands, e.g. `alias repo="ssh gitkiss repo"`
 
 
 
