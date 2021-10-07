@@ -16,6 +16,9 @@
 # along with GitKiss.  If not, see <https://www.gnu.org/licenses/>.
 
 
+if [ -z "$GK_IMP_LIB_STRINGS" ]; then
+GK_IMP_LIB_STRINGS=1
+
 isIn(){
 	for s in $2; do
 		if [ "$1" = "$s" ]; then
@@ -33,3 +36,5 @@ matches(){
 isOneWord(){
 	[ "$1" = "$@" ]
 }
+
+fi

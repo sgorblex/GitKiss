@@ -16,6 +16,9 @@
 # along with GitKiss.  If not, see <https://www.gnu.org/licenses/>.
 
 
+if [ -z "$GK_IMP_LIB_PERMS" ]; then
+GK_IMP_LIB_PERMS=1
+
 . $GK_LIB/strings.sh
 
 # getPermsReadable echoes the permission code corresponding to $1. If not valid, outputs -1.
@@ -82,3 +85,5 @@ getRepoPerms(){
 	repoPath="$GK_REPO_PATH/$1.git"
 	cat "$repoPath/gk_perms"
 }
+
+fi

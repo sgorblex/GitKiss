@@ -16,6 +16,9 @@
 # along with GitKiss.  If not, see <https://www.gnu.org/licenses/>.
 
 
+if [ -z "$GK_IMP_LIB_USERS" ]; then
+GK_IMP_LIB_USERS=1
+
 . $GK_LIB/strings.sh
 . $GK_LIB/keys.sh
 . $GK_LIB/repos.sh
@@ -108,3 +111,5 @@ rmUser(){
 		done
 	done
 }
+
+fi

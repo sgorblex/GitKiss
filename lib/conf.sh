@@ -16,6 +16,9 @@
 # along with GitKiss.  If not, see <https://www.gnu.org/licenses/>.
 
 
+if [ -z "$GK_IMP_LIB_CONF" ]; then
+GK_IMP_LIB_CONF=1
+
 # read config file
 . "$GK_CONF"
 
@@ -38,3 +41,5 @@ export GK_AUTHORIZED_KEYS
 export GK_MAX_KEYS
 export GK_USERLIST
 export GK_ADMINLIST
+
+fi

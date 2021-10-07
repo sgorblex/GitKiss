@@ -16,6 +16,9 @@
 # along with GitKiss.  If not, see <https://www.gnu.org/licenses/>.
 
 
+if [ -z "$GK_IMP_LIB_KEYS" ]; then
+GK_IMP_LIB_KEYS=1
+
 PUB_KEY_TYPE_RE="\(ssh-\(rsa\|dss\|ed25519\)\|ecdsa-sha2-nistp\(256\|384\|521\)\)"
 KEY_PREAMBLE_1="command=\"$GK_PATH/shell.sh "
 KEY_PREAMBLE_2=',no-port-forwarding,no-X11-forwarding,no-agent-forwarding'
@@ -92,3 +95,5 @@ rmKey(){
 renameKey(){
 	sed -i "s/^\($(keyPreamble "$1") $PUB_KEY_TYPE_RE [a-zA-Z0-9+\/]\+ \)$2/\1$3/" "$GK_AUTHORIZED_KEYS"
 }
+
+fi

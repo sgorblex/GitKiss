@@ -16,6 +16,9 @@
 # along with GitKiss.  If not, see <https://www.gnu.org/licenses/>.
 
 
+if [ -z "$GK_IMP_LIB_REPOS" ]; then
+GK_IMP_LIB_REPOS=1
+
 . $GK_LIB/strings.sh
 
 # listRepos lists $1's repos.
@@ -85,3 +88,5 @@ unpublishRepo(){
 	repoPath="$GK_REPO_PATH/$1.git"
 	rm "$repoPath/git-daemon-export-ok"
 }
+
+fi
