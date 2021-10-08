@@ -48,11 +48,21 @@ fi
 
 
 user_ls(){
+	if [ $# -ne 0 ]; then
+		printf "user: ls: Invalid number of arguments.\n" >&2
+		exit 1
+	fi
+
 	listUsers
 }
 
 
 user_new(){
+	if [ $# -ne 1 ]; then
+		printf "user: new: Invalid number of arguments.\n" >&2
+		exit 1
+	fi
+
 	if isUser "$1"; then
 		printf "user: username $1 already taken.\n" >&2
 		exit 1
@@ -83,6 +93,11 @@ user_new(){
 
 
 user_rm(){
+	if [ $# -ne 1 ]; then
+		printf "user: rm: Invalid number of arguments.\n" >&2
+		exit 1
+	fi
+
 	if ! isUser "$1"; then
 		printf "user: $1 is not a valid user.\n" >&2
 		exit 1
@@ -106,16 +121,16 @@ user_rm(){
 }
 
 
-case "$1" in
+cmd=$1
+shift
+case "$cmd" in
 	"ls")
-		user_ls
+		user_ls $@
 		;;
 	"new")
-		shift
 		user_new $@
 		;;
 	"rm")
-		shift
 		user_rm $@
 		;;
 	"--help" | "-h")

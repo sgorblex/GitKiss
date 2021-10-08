@@ -68,11 +68,21 @@ OPTIONS:
 	-h | --help		shows this help"
 
 	repo_ls_mine(){
+		if [ $# -ne 0 ]; then
+			printf "repo: ls: mine: Invalid number of arguments.\n" >&2
+			exit 1
+		fi
+
 		printf "Repositories owned by $GK_USER:\n"
 		listRepos "$GK_USER"
 	}
 
 	repo_ls_all(){
+		if [ $# -ne 0 ]; then
+			printf "repo: ls: all: Invalid number of arguments.\n" >&2
+			exit 1
+		fi
+
 		printf "Repositories that you have access to:\n"
 
 		for user in $(listUsers); do
@@ -85,8 +95,9 @@ OPTIONS:
 	}
 
 	repo_ls_user(){
-		if [ -z "$1" ]; then
-			printf "repo: ls: user: Please provide an username.\n" >&2
+		if [ $# -ne 1 ]; then
+			printf "repo: ls: user: Invalid number of arguments.\n" >&2
+			exit 1
 		fi
 
 		if ! isUser "$1"; then
@@ -104,6 +115,11 @@ OPTIONS:
 	}
 
 	repo_ls_public(){
+		if [ $# -ne 0 ]; then
+			printf "repo: ls: user: Invalid number of arguments.\n" >&2
+			exit 1
+		fi
+
 		if [ -z "$1" ]; then
 			printf "Public repositories:\n"
 			for user in $(listUsers); do
@@ -129,12 +145,18 @@ OPTIONS:
 		done
 	}
 
+
 	case "$1" in
-		"mine"|"")
-			repo_ls_mine
+		"")
+			repo_ls_mine $@
+			;;
+		"mine")
+			shift
+			repo_ls_mine $@
 			;;
 		"all")
-			repo_ls_all
+			shift
+			repo_ls_all $@
 			;;
 		"user")
 			shift
@@ -155,10 +177,11 @@ OPTIONS:
 }
 
 repo_rm() {
-	if [ -z "$1" ]; then
-		printf "repo: rm: Insert repo name as argument\n" >&2
+	if [ $# -ne 1 ]; then
+		printf "repo: rm: Invalid number of arguments.\n" >&2
 		exit 1
 	fi
+
 	repo="${@%.git}"
 
 	if ! isRepo "$GK_USER/$repo"; then
@@ -171,10 +194,11 @@ repo_rm() {
 }
 
 repo_new() {
-	if [ -z "$1" ]; then
-		printf "repo: new: Insert repo name as argument.\n" >&2
+	if [ $# -ne 1 ]; then
+		printf "repo: new: Invalid number of arguments.\n" >&2
 		exit 1
 	fi
+
 	repo="${1%.git}"
 
 	if [ $(repoNumber "$GK_USER") -ge "$GK_MAX_REPOS" ]; then
@@ -197,10 +221,11 @@ repo_new() {
 }
 
 repo_publish() {
-	if [ -z "$1" ]; then
-		printf "repo: publish: Insert repo name as argument.\n" >&2
+	if [ $# -ne 1 ]; then
+		printf "repo: publish: Invalid number of arguments.\n" >&2
 		exit 1
 	fi
+
 	repo="${1%.git}"
 
 	if ! isRepo "$GK_USER/$repo"; then
@@ -218,10 +243,11 @@ repo_publish() {
 }
 
 repo_unpublish() {
-	if [ -z "$1" ]; then
-		printf "repo: unpublish: Insert repo name as argument\n" >&2
+	if [ $# -ne 1 ]; then
+		printf "repo: unpublish: Invalid number of arguments.\n" >&2
 		exit 1
 	fi
+
 	repo="${1%.git}"
 
 	if ! isRepo "$GK_USER/$1"; then
@@ -254,6 +280,11 @@ Where PERM is one of:
 
 OPTIONS:
 	-h | --help			shows this help"
+
+	if [ -z "$1" ]; then
+		printf "repo: perm: Please specify a command.\n" >&2
+		exit 1
+	fi
 
 	repo_perm_ls(){
 		if [ -z "$1" ]; then
@@ -302,13 +333,13 @@ OPTIONS:
 		printf "Permissions set.\n"
 	}
 
-	case "$1" in
+		cmd=$1
+		shift
+		case "$cmd" in
 		"ls")
-			shift
 			repo_perm_ls $@
 			;;
 		"set")
-			shift
 			repo_perm_set $@
 			;;
 		"--help" | "-h")
@@ -320,29 +351,25 @@ OPTIONS:
 	esac
 }
 
-case "$1" in
+cmd=$1
+shift
+case "$cmd" in
 	"ls")
-		shift
 		repo_ls $@
 		;;
 	"new")
-		shift
 		repo_new $@
 		;;
 	"rm")
-		shift
 		repo_rm $@
 		;;
 	"publish")
-		shift
 		repo_publish $@
 		;;
 	"unpublish")
-		shift
 		repo_unpublish $@
 		;;
 	"perm")
-		shift
 		repo_perm $@
 		;;
 	"--help" | "-h")

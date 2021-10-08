@@ -38,23 +38,28 @@ set -e
 
 
 if ! isUser "$GK_USER"; then
-	printf "repo: You are not a valid user.\n" >&2
+	printf "key: You are not a valid user.\n" >&2
 	exit 1
 fi
 
 if [ -z "$1" ]; then
-	printf "repo: Please specify a command.\n" >&2
+	printf "key: Please specify a command.\n" >&2
 	exit 1
 fi
 
 
 key_ls(){
+	if [ $# -ne 0 ]; then
+		printf "key: ls: Invalid number of arguments.\n" >&2
+		exit 1
+	fi
+
 	listKeys "$GK_USER"
 }
 
 key_add(){
-	if [ -z "$1" ]; then
-		printf "key: add: Please specify a new key name.\n" >&2
+	if [ $# -ne 1 ]; then
+		printf "key: add: Invalid number of arguments.\n" >&2
 		exit 1
 	fi
 
@@ -82,8 +87,8 @@ key_add(){
 }
 
 key_rm(){
-	if [ -z "$@" ]; then
-		printf "key: rm: Please specify a key name.\n" >&2
+	if [ $# -ne 1 ]; then
+		printf "key: rm: Invalid number of arguments.\n" >&2
 		exit 1
 	fi
 
@@ -102,12 +107,8 @@ key_rm(){
 }
 
 key_rename(){
-	if [ -z "$1" ]; then
-		printf "key: rename: Please specify a key name.\n" >&2
-		exit 1
-	fi
-	if [ -z "$2" ]; then
-		printf "key: rename: Please specify a new key name.\n" >&2
+	if [ $# -ne 2 ]; then
+		printf "key: rename: Invalid number of arguments.\n" >&2
 		exit 1
 	fi
 
@@ -121,20 +122,19 @@ key_rename(){
 }
 
 
-case "$1" in
+cmd=$1
+shift
+case "$cmd" in
 	"ls")
 		key_ls $@
 		;;
 	"add")
-		shift
 		key_add $@
 		;;
 	"rm")
-		shift
 		key_rm $@
 		;;
 	"rename")
-		shift
 		key_rename $@
 		;;
 	"--help" | "-h")

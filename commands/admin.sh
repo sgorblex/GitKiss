@@ -45,11 +45,21 @@ fi
 
 
 admin_ls(){
+	if [ $# -ne 0 ]; then
+		printf "admin: ls: Invalid number of arguments.\n" >&2
+		exit 1
+	fi
+
 	listAdmins
 }
 
 
 admin_add(){
+	if [ $# -ne 1 ]; then
+		printf "admin: add: Invalid number of arguments.\n" >&2
+		exit 1
+	fi
+
 	if ! isUser "$1"; then
 		printf "admin: $1 is not a valid user.\n" >&2
 		exit 1
@@ -64,6 +74,11 @@ admin_add(){
 
 
 admin_rm(){
+	if [ $# -ne 1 ]; then
+		printf "admin: rm: Invalid number of arguments.\n" >&2
+		exit 1
+	fi
+
 	if ! isUser "$1"; then
 		printf "admin: $1 is not a valid user.\n" >&2
 		exit 1
@@ -82,7 +97,8 @@ admin_rm(){
 
 case "$1" in
 	"ls")
-		admin_ls
+		shift
+		admin_ls $@
 		;;
 	"add")
 		shift

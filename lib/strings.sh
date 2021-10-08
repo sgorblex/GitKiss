@@ -19,6 +19,10 @@
 if [ -z "$GK_IMP_LIB_STRINGS" ]; then
 GK_IMP_LIB_STRINGS=1
 
+# isIn returns 0 if the word $1 is contained in the word list $2, 1 otherwise.
+# arguments:
+# $1: word
+# $2: word list
 isIn(){
 	for s in $2; do
 		if [ "$1" = "$s" ]; then
@@ -28,11 +32,17 @@ isIn(){
 	return 1
 }
 
+# matches returns 0 if the string $1 matches the (extended) regex $2, 1 otherwise.
+# arguments:
+# $1: word
+# $2: regex
 matches(){
 	printf "$1\n" | grep -Ex "$2" >/dev/null
 }
 
-# $1 must be a single word
+# isOneWord returns 0 if $@ is a single word, 1 otherwise. Each argument must be a single word.
+# arguments:
+# $@ = $1, $2, ... : words
 isOneWord(){
 	[ "$1" = "$@" ]
 }
