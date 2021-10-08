@@ -55,7 +55,7 @@ GK_INTERACTIVE=true
 # message of the day
 GK_MOTD=$(cat "$GK_PATH/motd")
 
-# normal prompt
+# normal prompt (you may use the variable $GK_USER which represents the logged user)
 GK_PROMPT="\nGitKiss > "
 
 # prompt when previous command exited with error

@@ -19,6 +19,12 @@
 
 set -e
 
+export GK_USER="$1"
+if [ -z "$GK_USER" ]; then
+	printf "This shell is supposed to be executed via ssh only. You appear to not have any GitKiss username\n" >&2
+	exit 1
+fi
+
 GK_PATH=$(readlink -f "${0%/*}")
 GK_CONF="$GK_PATH/conf.sh"
 GK_COMMANDS="$GK_PATH/commands"
@@ -97,12 +103,6 @@ handleGit(){
 
 }
 
-
-export GK_USER="$1"
-if [ -z "$GK_USER" ]; then
-	printf "This shell is supposed to be executed via ssh only. You appear to not have any GitKiss username\n" >&2
-	exit 1
-fi
 
 if [ -n "$SSH_ORIGINAL_COMMAND" ]; then
 	shift
