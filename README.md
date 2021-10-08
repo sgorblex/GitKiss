@@ -118,6 +118,19 @@ chmod +x commands/clear.sh
 
 
 
+## Docker
+You can build your own GitKiss Docker image by downloading the `Dockerfile` and building it:
+```sh
+curl -O https://raw.githubusercontent.com/sgorblex/GitKiss/master/Dockerfile
+docker build --build-arg OWNER=ownername --build-arg PUBKEY=path/of/key/.pub --rm -t gitkiss:latest .
+```
+This will build a Docker image of GitKiss with default settings (system user `gitkiss`). You can then run it with:
+```sh
+docker run gitkiss
+```
+
+
+
 ## Contribute
 I like clean code! Make a pull request if you think some part can be better written (which is very possible) or if you think you have a killer feature upstream should have. Of course, filing [GitHub issues](https://github.com/sgorblex/GitKiss/issues) is a big help too.
 

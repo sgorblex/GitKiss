@@ -2,7 +2,7 @@
 
 
 ## Improvements
-- Docker image
+- support non `*.sh` commands
 - check when launching scripts that they run from the shell (so env variables are set) and/or set some fallback mechanism for when commands are not run by the shell
 - configuration validity check
 - ditch `isIn` (?)
