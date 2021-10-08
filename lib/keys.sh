@@ -85,7 +85,7 @@ addKey(){
 # $1: key owner (a valid user)
 # $2: key name
 rmKey(){
-	sed -i "\:^$(keyPreamble "$1") $PUB_KEY_TYPE_RE $PUB_KEY_RE $2:d" "$GK_AUTHORIZED_KEYS"
+	sed -i "\:^$(keyPreamble "$1") $PUB_KEY_TYPE_RE $PUB_KEY_RE $2$:d" "$GK_AUTHORIZED_KEYS"
 }
 
 # renameKey renames the key named $2 from $1's public keys to the new name $3.
@@ -94,7 +94,7 @@ rmKey(){
 # $2: current key name
 # $3: new key name
 renameKey(){
-	sed -i "s:^\($(keyPreamble "$1") $PUB_KEY_TYPE_RE $PUB_KEY_RE \)$2:\1$3:" "$GK_AUTHORIZED_KEYS"
+	sed -i "s:^\($(keyPreamble "$1") $PUB_KEY_TYPE_RE $PUB_KEY_RE \)$2$:\1$3:" "$GK_AUTHORIZED_KEYS"
 }
 
 fi
