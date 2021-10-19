@@ -29,6 +29,10 @@ Where COMMAND is one of:
 	unpublish <repo name>			unpublishes the repository with the specified name
 						from git-daemon (git protocol)
 	perm <verb> <arguments>			lists/sets permissions for your repos
+	desc <repo name>			changes repo description (stdin)
+	info <repo name>			shows information on the specified repo
+	tree <repo name> [branch]		shows the filetree of the specified repo on the
+						specified branch (or default branch if omitted)
 
 OPTIONS:
 	-h | --help				shows this help
@@ -38,6 +42,7 @@ Maximum number of repositories per user is $GK_MAX_REPOS by the current configur
 set -e
 
 . "$GK_LIB/perms.sh"
+. "$GK_LIB/readconf.sh"
 . "$GK_LIB/repos.sh"
 . "$GK_LIB/strings.sh"
 . "$GK_LIB/users.sh"
@@ -351,6 +356,82 @@ OPTIONS:
 	esac
 }
 
+repo_desc() {
+	if [ $# -ne 1 ]; then
+		printf "repo: desc: Invalid number of arguments.\n" >&2
+		exit 1
+	fi
+
+	repo="${@%.git}"
+
+	if ! isRepo "$GK_USER/$repo"; then
+		printf "repo: desc: A repository with such name does not exist.\n" >&2
+		exit 1
+	fi
+
+	printf "Insert the new description:\n"
+	read desc || exit 1
+	if [ ${#desc} -gt "$GK_MAXCHAR_DESC" ]; then
+		printf "Too long for a description (max characters $GK_MAXCHAR_DESC)"
+		exit 1
+	fi
+	repoSetDesc "$GK_USER/$repo" "$desc"
+}
+
+repo_info() {
+	if [ $# -ne 1 ]; then
+		printf "repo: info: Invalid number of arguments.\n" >&2
+		exit 1
+	fi
+
+	repo=$1
+	if [ "$repo" = "${repo##*/}" ]; then
+		repo="$GK_USER/$repo"
+	fi
+	repo="${repo%.git}"
+
+	if ! isRepo "$repo" || [ $(getPerms "$repo" "$GK_USER") -lt 1 ]; then
+		printf "repo: tree: The specified repo does not exist or you don't have sufficient permissions on it.\n" >&2
+		exit 1
+	fi
+
+	if isEmptyRepo "$repo"; then
+		branches="<empty>"
+		defbranch="<empty>"
+		lastcommit="<empty>"
+	else
+		branches="$(listBranches "$repo")"
+		defbranch="$(repoDefBranch "$repo")"
+		lastcommit="$(repoLastCommit "$repo")"
+	fi
+
+	printf "Name:\t\t${repo##*/}
+Owner:\t\t${repo%%/*}
+Size:\t\t$(repoSize "$repo")
+Default branch:\t$defbranch
+Last commit:\t$lastcommit
+Description:\n$(repoGetDesc "$repo")
+Branches:\n$branches
+"
+
+	exit 42
+	if isEmptyRepo "$repo"; then
+		printf "The repository is empty.\n"
+	else
+		if [ -n "$2" ]; then
+			if ! isBranch "$repo" "$2"; then
+				printf "repo: tree: No such branch: $2.\n" >&2
+				exit 1
+			fi
+			branch="$2"
+		else
+			branch="HEAD"
+		fi
+
+		treeRepo "$repo" "$branch"
+	fi
+}
+
 
 repo_tree() {
 	if [ $# -ne 1 -a $# -ne 2 ]; then
@@ -407,6 +488,12 @@ case "$cmd" in
 		;;
 	"perm")
 		repo_perm $@
+		;;
+	"desc")
+		repo_desc $@
+		;;
+	"info")
+		repo_info $@
 		;;
 	"tree")
 		repo_tree $@

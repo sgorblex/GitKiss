@@ -45,6 +45,9 @@ GK_MAX_REPOS=99
 # path of the repositories of deleted users (leave blank for no archive)
 GK_ARCHIVE_PATH="$GK_PATH/archived"
 
+# maximum number of characters per repo description
+GK_MAXCHAR_DESC=150
+
 
 
 # INTERACTIVE SHELL

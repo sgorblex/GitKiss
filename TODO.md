@@ -9,7 +9,7 @@
 - various permissions for admins (e.g. add users but not delete them, manage pubkeys, etc.)
 - key show command for viewing public keys
 - man page
-- possibility of changing default branch
+- possibility of changing default branch (`git symbolic-ref HEAD refs/heads/mybranch`)
 
 ### "Security"
 - make the code more secure to avoid argument injection (e.g. arguments containing `/` or regex elements (`*`))

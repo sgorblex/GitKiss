@@ -62,6 +62,7 @@ isValidRepoName(){
 newRepo(){
 	repoPath="$GK_REPO_PATH/$1.git"
 	git init --bare -q "$repoPath"
+	printf "\n" > "$repoPath/description"
 	printf "${1%/*}: rw+\n" > "$repoPath/gk_perms"
 }
 
@@ -112,8 +113,59 @@ isEmptyRepo(){
 # $2: branch (valid)
 treeRepo(){
 	repoPath="$GK_REPO_PATH/$1.git"
-	cd $repoPath
+	cd "$repoPath"
 	printf "$1\n" && git ls-tree -tr --name-only "$2" | tree --fromfile | sed '1d'
+}
+
+# listBranches lists the branches of the repo $1.
+# arguments:
+# $1: owner/repo (valid combination)
+listBranches(){
+	repoPath="$GK_REPO_PATH/$1.git"
+	ls -A "$repoPath/refs/heads"
+}
+
+# listBranches prints the size of the repo $1.
+# arguments:
+# $1: owner/repo (valid combination)
+repoSize(){
+	repoPath="$GK_REPO_PATH/$1.git"
+	du -csh "$repoPath" | head -1 | cut -f 1
+}
+
+# repoDefBranch prints the default branch of the repo $1.
+# arguments:
+# $1: owner/repo (valid combination)
+repoDefBranch(){
+	repoPath="$GK_REPO_PATH/$1.git"
+	head=$(cat "$repoPath/HEAD")
+	printf "${head##ref: refs/heads/}\n"
+}
+
+# repoLastCommit prints the last commit message for the repo $1.
+# arguments:
+# $1: owner/repo (valid combination)
+repoLastCommit(){
+	repoPath="$GK_REPO_PATH/$1.git"
+	cd "$repoPath"
+	git log --format=%B -n 1
+}
+
+# repoSetDesc sets the description of the repo $1 to $2.
+# arguments:
+# $1: owner/repo (valid combination)
+# $2: new description
+repoSetDesc(){
+	repoPath="$GK_REPO_PATH/$1.git"
+	printf "$2\n" > "$repoPath/description"
+}
+
+# repoGetDesc prints the description of the repo $1.
+# arguments:
+# $1: owner/repo (valid combination)
+repoGetDesc(){
+	repoPath="$GK_REPO_PATH/$1.git"
+	cat "$repoPath/description"
 }
 
 fi
