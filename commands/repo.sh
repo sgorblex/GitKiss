@@ -351,6 +351,42 @@ OPTIONS:
 	esac
 }
 
+
+repo_tree() {
+	if [ $# -ne 1 -a $# -ne 2 ]; then
+		printf "repo: tree: Invalid number of arguments.\n" >&2
+		exit 1
+	fi
+
+	repo=$1
+	if [ "$repo" = "${repo##*/}" ]; then
+		repo="$GK_USER/$repo"
+	fi
+	repo="${repo%.git}"
+
+	if ! isRepo "$repo" || [ $(getPerms "$repo" "$GK_USER") -lt 1 ]; then
+		printf "repo: tree: The specified repo does not exist or you don't have sufficient permissions on it.\n" >&2
+		exit 1
+	fi
+
+	if isEmptyRepo "$repo"; then
+		printf "The repository is empty.\n"
+	else
+		if [ -n "$2" ]; then
+			if ! isBranch "$repo" "$2"; then
+				printf "repo: tree: No such branch: $2.\n" >&2
+				exit 1
+			fi
+			branch="$2"
+		else
+			branch="HEAD"
+		fi
+
+		treeRepo "$repo" "$branch"
+	fi
+}
+
+
 cmd=$1
 shift
 case "$cmd" in
@@ -371,6 +407,9 @@ case "$cmd" in
 		;;
 	"perm")
 		repo_perm $@
+		;;
+	"tree")
+		repo_tree $@
 		;;
 	"--help" | "-h")
 		printf "%s\n%s\n" "$DESCRIPTION" "$USAGE"

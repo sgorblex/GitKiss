@@ -9,12 +9,15 @@
 - various permissions for admins (e.g. add users but not delete them, manage pubkeys, etc.)
 - key show command for viewing public keys
 - man page
+- possibility of changing default branch
 
 ### "Security"
 - make the code more secure to avoid argument injection (e.g. arguments containing `/` or regex elements (`*`))
 - check key names (and better check usernames and repo names)
 
 ## Ideas
+- info command (`info repo` with size, branch list)
+- repo desc command (for repo descriptions)
 - uninstall script
 - *how it works* section in README/manual
 - `whoami` command

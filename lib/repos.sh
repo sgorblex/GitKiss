@@ -89,4 +89,31 @@ unpublishRepo(){
 	rm "$repoPath/git-daemon-export-ok"
 }
 
+# isBranch returns 0 if $2 is a valid branch for repo $1, 1 otherwise.
+# arguments and format:
+# $1: owner/repo (valid combination)
+# $2: branch name
+isBranch(){
+	repoPath="$GK_REPO_PATH/$1.git"
+	[ -f "$repoPath/refs/heads/$2" ]
+}
+
+# isEmptyRepo returns 0 if $1 is an empty repo, 1 otherwise.
+# arguments and format:
+# $1: owner/repo (valid combination)
+isEmptyRepo(){
+	repoPath="$GK_REPO_PATH/$1.git"
+	[ -z "$(ls -A $repoPath/refs/heads)" ]
+}
+
+# treeRepo prints a tree representation of the repo $1 on branch $2.
+# arguments and format:
+# $1: owner/repo (valid combination)
+# $2: branch (valid)
+treeRepo(){
+	repoPath="$GK_REPO_PATH/$1.git"
+	cd $repoPath
+	printf "$1\n" && git ls-tree -tr --name-only "$2" | tree --fromfile | sed '1d'
+}
+
 fi
