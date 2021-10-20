@@ -141,7 +141,7 @@ case "$cmd" in
 		printf "%s\n%s\n" "$DESCRIPTION" "$USAGE"
 		;;
 	*)
-		printf "Unrecognised command.\n" >&2
+		printf "key: Unrecognised command.\n" >&2
 		exit 1
 		;;
 esac

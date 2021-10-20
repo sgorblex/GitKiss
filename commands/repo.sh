@@ -502,7 +502,7 @@ case "$cmd" in
 		printf "%s\n%s\n" "$DESCRIPTION" "$USAGE"
 		;;
 	*)
-		printf "Unrecognised command.\n" >&2
+		printf "repo: Unrecognised command.\n" >&2
 		exit 1
 		;;
 esac
