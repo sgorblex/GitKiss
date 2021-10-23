@@ -2,22 +2,20 @@
 
 
 ## Improvements
+- `repo desc`: add isPublic
 - support non `*.sh` commands
+- possibility of changing default branch (`git symbolic-ref HEAD refs/heads/mybranch`)
+- key show command for viewing public keys
 - check when launching scripts that they run from the shell (so env variables are set) and/or set some fallback mechanism for when commands are not run by the shell
 - configuration validity check
-- ditch `isIn` (?)
 - various permissions for admins (e.g. add users but not delete them, manage pubkeys, etc.)
-- key show command for viewing public keys
 - man page
-- possibility of changing default branch (`git symbolic-ref HEAD refs/heads/mybranch`)
 
 ### "Security"
 - make the code more secure to avoid argument injection (e.g. arguments containing `/` or regex elements (`*`))
 - check key names (and better check usernames and repo names)
 
 ## Ideas
-- info command (`info repo` with size, branch list)
-- repo desc command (for repo descriptions)
 - uninstall script
 - *how it works* section in README/manual
 - `whoami` command
@@ -26,3 +24,4 @@
 - config flag to make every repo accessible by the owner, another flag for admins (?). Should this also give permission to manage?
 - client side completion engine (user list?)
 - user command: add rename verb (?)
+- ditch `isIn` (?)
