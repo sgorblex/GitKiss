@@ -32,6 +32,7 @@ GK_LIB="$GK_PATH/lib"
 . "$GK_LIB/readconf.sh"
 
 . "$GK_LIB/perms.sh"
+. "$GK_LIB/repos.sh"
 
 
 launchCommand() {
@@ -79,6 +80,9 @@ handleGit(){
 		repo="$GK_USER/$repo"
 	fi
 	repo="${repo%.git}"
+	if ! isRepo "$repo"; then
+		exit 1
+	fi
 
 	case $1 in
 		"git-receive-pack")
