@@ -2,8 +2,7 @@
 
 
 ## Improvements
-- `repo desc`: add isPublic
-- support non `*.sh` commands
+- `repo info`: add isPublic
 - possibility of changing default branch (`git symbolic-ref HEAD refs/heads/mybranch`)
 - key show command for viewing public keys
 - check when launching scripts that they run from the shell (so env variables are set) and/or set some fallback mechanism for when commands are not run by the shell

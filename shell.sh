@@ -39,8 +39,8 @@ launchCommand() {
 	shift
 	args="$@"
 
-	if [ -f "$GK_COMMANDS/$cmd.sh" ]; then
-		"$GK_COMMANDS/$cmd.sh" $args
+	if [ -x "$GK_COMMANDS/$cmd" ]; then
+		"$GK_COMMANDS/$cmd" $args
 	else
 		printf "Unrecognized command: $cmd\n" >&2
 		return 1

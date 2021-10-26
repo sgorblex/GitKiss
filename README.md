@@ -110,10 +110,10 @@ Add aliases within your shell to avoid writing long commands, e.g. `alias repo="
 ## Configuration
 You may configure some aspects of the server by tweaking the file `GK_PATH/conf.sh`, which by default resides in `/srv/gitkiss/gitkiss/conf.sh`. The file is sourced by the GitKiss shell (so watch out to not break anything) and every customizable variable follows a brief description.
 
-You can add commands by simpling adding an executable `command.sh` file in `commands/`. For example:
+You can add custom shell commands by simpling adding an executable `command` file in `commands/`. For example:
 ```
-printf "#!/bin/sh\nclear" > commands/clear.sh
-chmod +x commands/clear.sh
+printf "#!/bin/sh\nclear" > commands/clear
+chmod +x commands/clear
 ```
 
 
