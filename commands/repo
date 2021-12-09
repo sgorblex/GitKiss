@@ -411,25 +411,9 @@ Size:\t\t$(repoSize "$repo")
 Default branch:\t$defbranch
 Last commit:\t$lastcommit
 Description:\n$(repoGetDesc "$repo")
+Public:\t\t$(isPublic "$repo" && printf "yes" || printf "no")
 Branches:\n$branches
 "
-
-	exit 42
-	if isEmptyRepo "$repo"; then
-		printf "The repository is empty.\n"
-	else
-		if [ -n "$2" ]; then
-			if ! isBranch "$repo" "$2"; then
-				printf "repo: tree: No such branch: $2.\n" >&2
-				exit 1
-			fi
-			branch="$2"
-		else
-			branch="HEAD"
-		fi
-
-		treeRepo "$repo" "$branch"
-	fi
 }
 
 

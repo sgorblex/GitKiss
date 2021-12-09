@@ -2,11 +2,9 @@
 
 
 ## Improvements
-- `repo info`: fix non-zero exit code
 - more factorization of `lib/repos.sh`
 - fix recursive cloning
 - clone public repos via ssh
-- `repo info`: add isPublic
 - possibility of changing default branch (`git symbolic-ref HEAD refs/heads/mybranch`)
 - key show command for viewing public keys
 - check when launching scripts that they run from the shell (so env variables are set) and/or set some fallback mechanism for when commands are not run by the shell
