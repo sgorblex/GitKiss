@@ -98,7 +98,8 @@ GK_AUTHORIZED_KEYS=${GK_AUTHORIZED_KEYS:-"$USER_HOME/.ssh/authorized_keys"}
 SSH_DIR="${GK_AUTHORIZED_KEYS%/*}"
 
 if [ "$SYSTEM_USER" != $(whoami) ]; then
-	sudo useradd -md "$USER_HOME" "$SYSTEM_USER" || [ -n $FORCE ]
+	sudo groupadd "$SYSTEM_USER" || [ -n $FORCE ]
+	sudo useradd -md "$USER_HOME" -g "$SYSTEM_USER" "$SYSTEM_USER" || [ -n $FORCE ]
 	sudo -u "$SYSTEM_USER" git clone "$REPO_URL" "$GK_PATH" || [ -n $FORCE ]
 	sudo -u "$SYSTEM_USER" "$GK_PATH/install.sh" \
 		-s "$SYSTEM_USER" \
