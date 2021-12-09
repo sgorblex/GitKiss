@@ -94,7 +94,7 @@ handleGit(){
 			fi
 			;;
 		"git-upload-pack"|"git-upload-archive")
-			if [ $(getPerms "$repo" "$GK_USER") -lt 1 ]; then
+			if [ $(getPerms "$repo" "$GK_USER") -lt 1 ] && ! isPublic "$repo" ; then
 				exit 1
 			else
 				"$1" "$GK_REPO_PATH/$repo.git"
