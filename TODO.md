@@ -3,8 +3,6 @@
 
 ## Improvements
 - more factorization of `lib/repos.sh`
-- fix recursive cloning
-- clone public repos via ssh
 - possibility of changing default branch (`git symbolic-ref HEAD refs/heads/mybranch`)
 - key show command for viewing public keys
 - check when launching scripts that they run from the shell (so env variables are set) and/or set some fallback mechanism for when commands are not run by the shell
@@ -13,6 +11,7 @@
 - man page
 
 ### "Security"
+- check printf calls and use %s to avoid format abuse
 - make the code more secure to avoid argument injection (e.g. arguments containing `/` or regex elements (`*`))
 - check key names (and better check usernames and repo names)
 
