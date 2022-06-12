@@ -107,6 +107,16 @@ isEmptyRepo(){
 	[ -z "$(ls -A $repoPath/refs/heads)" ]
 }
 
+# defBranchRepo sets the default branch of the repo $1 to $2.
+# arguments and format:
+# $1: owner/repo (valid combination)
+# $2: branch (valid)
+defBranchRepo(){
+	repoPath="$GK_REPO_PATH/$1.git"
+	cd "$repoPath"
+	git symbolic-ref HEAD "refs/heads/$2"
+}
+
 # treeRepo prints a tree representation of the repo $1 on branch $2.
 # arguments and format:
 # $1: owner/repo (valid combination)

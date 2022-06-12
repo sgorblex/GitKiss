@@ -30,6 +30,8 @@ Where COMMAND is one of:
 						from git-daemon (git protocol)
 	perm <verb> <arguments>			lists/sets permissions for your repos
 	desc <repo name>			changes repo description (stdin)
+	defbranch <repo name> <branch name>	switches the default branch for the specified repo
+						to the specified branch
 	info <repo name>			shows information on the specified repo
 	tree <repo name> [branch]		shows the filetree of the specified repo on the
 						specified branch (or default branch if omitted)
@@ -378,6 +380,37 @@ repo_desc() {
 	repoSetDesc "$GK_USER/$repo" "$desc"
 }
 
+repo_defBranch() {
+	if [ $# -ne 2 ]; then
+		printf "repo: def-branch: Invalid number of arguments.\n" >&2
+		exit 1
+	fi
+
+	repo=$1
+	if [ "$repo" = "${repo##*/}" ]; then
+		repo="$GK_USER/$repo"
+	fi
+	repo="${repo%.git}"
+
+	if ! isRepo "$repo" || [ $(getPerms "$repo" "$GK_USER") -lt 1 ]; then
+		printf "repo: defBranch: The specified repo does not exist or you don't have sufficient permissions on it.\n" >&2
+		exit 1
+	fi
+
+	if [ -n "$2" ]; then
+		if ! isBranch "$repo" "$2"; then
+			printf "repo: defBranch: No such branch: $2.\n" >&2
+			exit 1
+		fi
+		branch="$2"
+	else
+		branch="HEAD"
+	fi
+
+	defBranchRepo "$repo" "$branch"
+	printf "Default branch changed successfully."
+}
+
 repo_info() {
 	if [ $# -ne 1 ]; then
 		printf "repo: info: Invalid number of arguments.\n" >&2
@@ -475,6 +508,9 @@ case "$cmd" in
 		;;
 	"desc")
 		repo_desc $@
+		;;
+	"defbranch")
+		repo_defBranch $@
 		;;
 	"info")
 		repo_info $@
